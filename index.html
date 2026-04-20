@@ -1032,6 +1032,35 @@ const SUITS = [
 ];
 const PLAYERS = ['You','Doyle "The Godfather" Brunson','The Cincinnati Kid'];
 const SHORT = ['YOU','DOYLE','THE KID'];
+
+// ---- Per-bot personalities ----
+// Doyle: patient, tight, rarely bluffs, high margin before challenging. A
+//        grandmaster who waits for you to over-extend.
+// The Kid: aggressive, intuitive, reads tells, snap-calls, bluffs often.
+//          Lower challenge margin, higher bluff rate, quicker plays.
+const PROFILE = [
+  null,
+  { // Doyle
+    name:'Doyle',
+    margin:{imp:-10, over:0.25, hyp:1.6},        // hypergeometric needs STRONG evidence
+    leaderTrust:0.45,                             // halves suspicion of an opener
+    bluffWhenLeading:0.08,
+    bluffWhenForced:0.25,
+    playBonus:0.0,                                 // neutral
+    challNoise:0.03,
+    confidenceFloorToChall:0.72                    // require pBluff ≥ 0.72 on hypergeometric
+  },
+  { // The Cincinnati Kid
+    name:'The Kid',
+    margin:{imp:-10, over:-0.05, hyp:0.55},       // far quicker to pull the trigger
+    leaderTrust:0.75,                              // mostly believes openers but not always
+    bluffWhenLeading:0.28,                         // will stage a big bluff lead
+    bluffWhenForced:0.55,
+    playBonus:0.25,                                // prefers to stay active
+    challNoise:0.12,                               // more volatile / human-like
+    confidenceFloorToChall:0.55
+  }
+];
 const TOTAL = 52;
 
 // ---------- RNG ----------
@@ -1399,78 +1428,72 @@ function botDecide(pIdx){
   const last = G.lastPlay;
   if(last.player === pIdx) return {act:'PASS'};
 
+  const P = PROFILE[pIdx] || PROFILE[1];
   const R = last.claimedRank;
   const myR = countRank(G.hands[pIdx], R);
   const revR = G.revealedByRank[R] || 0;
-  // Baseline unseen copies of rank R to the bot.
-  let K_rem = 4 - myR - revR;
-  if(K_rem < 0) K_rem = 0;
+  let K_rem = Math.max(0, 4 - myR - revR);
 
-  // -------- HISTORY-AWARE BLUFF ESTIMATE --------
-  // Everything on the pile has been claimed as rank R during THIS round
-  // (by Bluff rules, the rank is locked until someone challenges).
   const totalClaimedThisRound = G.pile.length;
   const priorClaimedBeforeLast = totalClaimedThisRound - last.count;
+  const isOpenerClaim = (last.player === G.leader) && (priorClaimedBeforeLast === 0);
 
   let pBluff;
   let reason = 'hypergeometric';
+  let challMargin = P.margin.hyp;
 
   if(last.count > K_rem){
-    // The latest claim alone is bigger than all unseen copies of R. IMPOSSIBLE.
-    pBluff = 1.0; reason = 'impossible-claim';
+    // IMPOSSIBLE — more claimed in one play than can exist unseen.
+    pBluff = 1.0; reason = 'impossible-claim'; challMargin = P.margin.imp;
   } else if(totalClaimedThisRound > K_rem){
-    // Overclaim across the round — someone bluffed. The later you speak, the
-    // more suspicious you are because earlier claims ate into capacity.
+    // OVERCLAIM — round claims exceed capacity, bluff guaranteed somewhere.
     const excess = totalClaimedThisRound - K_rem;
     pBluff = Math.min(1, 0.55 + 0.35 * (excess / Math.max(1, totalClaimedThisRound)));
-    reason = 'overclaim';
+    reason = 'overclaim'; challMargin = P.margin.over;
   } else {
-    // No contradiction — fall back to the hypergeometric estimate, BUT
-    // condition on prior (non-challenged) plays having been truthful. In
-    // practice: assume prior plays burned `priorClaimedBeforeLast` copies
-    // of R from the pool, so the last player drew from a smaller urn.
+    // No contradiction — hypergeometric.
     const K_effective = Math.max(0, K_rem - priorClaimedBeforeLast);
-    const N_unseen = Math.max(1, unseenFor(pIdx) - priorClaimedBeforeLast);
-    const oppHandSize = G.hands[last.player].length + last.count; // pre-play size
+    const N_unseen    = Math.max(1, unseenFor(pIdx) - priorClaimedBeforeLast);
+    const oppHandSize = G.hands[last.player].length + last.count;
     const pTrue = pOppHasAtLeast(last.count, K_effective, N_unseen, oppHandSize);
     pBluff = Math.max(0, Math.min(1, 1 - pTrue));
+
+    // ---- REAL-PLAYER HEURISTIC ----
+    // People announce their STRONGEST rank when they open a round. Trust
+    // openers more; don't just read the urn naively.
+    if(isOpenerClaim){
+      pBluff *= P.leaderTrust;
+    }
+    // Confidence floor — this is "no contradiction" territory. Demand a
+    // hard confidence floor before challenging on pure statistics; this is
+    // the single knob that stops reckless calls on plausible claims like
+    // "3 twos".
+    if(pBluff < P.confidenceFloorToChall){
+      reason = 'not-confident-enough';
+      // Force the challenge branch to be unattractive regardless of pile.
+      challMargin = 999;
+    }
   }
 
-  // -------- EXPECTED VALUES --------
-  // EV(CHALL): win → gain pile.length; lose → lose pile.length. So EV = (2p-1)*pile.
   const pile = G.pile.length;
   let ev_chall = (2*pBluff - 1) * pile;
-  // Small prudence tax when pile is tiny — accidentally challenging "just in
-  // case" is cheap but the reward is also small, so demand a bit more certainty.
   if(pile <= 2 && pBluff < 0.9) ev_chall -= 0.3;
 
-  // EV(PLAY): if we have matching cards, play up to 4 and bleed the hand.
-  // Bluff-playing (no matches) is risky because the next player might call.
   const matching = countRank(G.hands[pIdx], G.activeRank);
   let ev_play;
   if(matching >= 1){
-    const toPlay = Math.min(4, matching);
-    ev_play = toPlay * 0.9;           // offloading cards is strictly good
+    ev_play = Math.min(4, matching) * 0.9 + P.playBonus;
   } else {
-    // No matches → forced to bluff. Rough model: ~35 % chance the next player
-    // challenges; penalty scales with pile.
-    const pCalled = 0.35;
-    ev_play = (1 - pCalled) * 1.0 - pCalled * (pile * 0.9);
+    // No matches → forced bluff. Weight it by the bot's nerve.
+    const pCalled = (pIdx === 1) ? 0.45 : 0.28; // Doyle assumes he'll be called
+    ev_play = (1 - pCalled) * 1.0 - pCalled * (pile * 0.9) + P.playBonus;
   }
-
-  // EV(PASS) is always 0 in expectation (no cards change hands).
   const ev_pass = 0;
 
-  // Tiny noise — much smaller than before so real signal dominates.
-  const noise = () => (rng() - 0.5) * 0.05;
-
-  // Require a clear positive margin to challenge so the bot doesn't call on
-  // coin-flip EV. (The paper's models don't do this — it makes the bots play
-  // better than the LLMs they're compared to, which is the whole point.)
-  const challMargin = 0.4;
+  const noise = () => (rng() - 0.5) * P.challNoise;
   const finalChall = ev_chall + noise() - challMargin;
   const finalPlay  = ev_play  + noise();
-  const finalPass  = ev_pass  + noise();
+  const finalPass  = ev_pass  + noise()*0.4;
 
   const picks = [
     {a:'CHALL', v:finalChall},
@@ -1483,21 +1506,32 @@ function botDecide(pIdx){
   return {
     act:best,
     ev:{chall:ev_chall, play:ev_play, pass:ev_pass, pBluff, reason,
-        K_rem, priorClaimedBeforeLast, totalClaimedThisRound}
+        K_rem, priorClaimedBeforeLast, totalClaimedThisRound,
+        isOpenerClaim, bot:P.name}
   };
 }
 
 function botLead(pIdx){
-  // Open with rank where we have most cards; play that many (max 4).
-  const counts = RANKS.map(r => ({r, n:countRank(G.hands[pIdx], r)}));
+  const P = PROFILE[pIdx] || PROFILE[1];
+  const hand = G.hands[pIdx];
+  if(hand.length === 0) return {act:'LEAD', rank:'2', count:1}; // defensive
+
+  const counts = RANKS.map(r => ({r, n:countRank(hand, r)}));
   counts.sort((a,b)=>b.n-a.n);
-  // If hand is empty (shouldn't happen) — pass
-  if(counts[0].n === 0){
-    // have to bluff with something
-    const any = G.hands[pIdx][0];
+  const best = counts[0];
+
+  // Personality: The Kid stages bold bluff-leads; Doyle almost never does.
+  if(rng() < P.bluffWhenLeading && best.n >= 1 && best.n < 4){
+    const pad = 1 + (rng() < 0.3 ? 1 : 0);          // claim +1 or +2
+    const claim = Math.min(4, best.n + pad);
+    return {act:'LEAD', rank:best.r, count:claim};  // LEAD handler pads from non-matches
+  }
+
+  if(best.n === 0){
+    // Forced: no duplicates. Claim something modest.
+    const any = hand[0];
     return {act:'LEAD', rank:any.rank, count:1};
   }
-  const best = counts[0];
   const n = Math.min(4, best.n);
   return {act:'LEAD', rank:best.r, count:n};
 }
@@ -1506,27 +1540,32 @@ function botTurn(pIdx){
   if(G.phase !== 'IN_GAME' || G.turn !== pIdx) return;
   const d = botDecide(pIdx);
   if(d.act === 'LEAD'){
-    // play d.count real cards of d.rank
     const hand = G.hands[pIdx];
+    const wantN = Math.min(d.count, hand.length, 4);
     const picks = [];
-    for(let i=0;i<hand.length && picks.length<d.count;i++){
+    // First take real matches
+    for(let i=0; i<hand.length && picks.length < wantN; i++){
       if(hand[i].rank === d.rank) picks.push(i);
     }
-    // Bluff fallback
-    while(picks.length < d.count){
-      for(let i=0;i<hand.length;i++){
-        if(!picks.includes(i)){ picks.push(i); break; }
-      }
+    // Then pad with any other cards (bluff fill) — bounded loop, no recursion
+    for(let i=0; i<hand.length && picks.length < wantN; i++){
+      if(!picks.includes(i)) picks.push(i);
+    }
+    const n = picks.length;
+    if(n === 0){
+      // Truly empty hand — should be safe. Defensive: pass.
+      advanceTurn(); render(); checkSafeAndEnd();
+      if(G.phase === 'IN_GAME') step();
+      return;
     }
     const cards = picks.map(i=>hand[i]);
-    // Remove (high idx first)
     picks.sort((a,b)=>b-a).forEach(i=>hand.splice(i,1));
     G.pile.push(...cards);
     G.activeRank = d.rank;
-    G.lastPlay = {player:pIdx, count:d.count, claimedRank:d.rank, actualCards:cards};
+    G.lastPlay = {player:pIdx, count:n, claimedRank:d.rank, actualCards:cards};
     G.leader = pIdx;
     G.passesSincePlay = 0;
-    logEvent(PLAYERS[pIdx], `leads ${d.count}× ${d.rank}`, `(pile: ${G.pile.length})`, 'pl');
+    logEvent(PLAYERS[pIdx], `leads ${n}× ${d.rank}`, `(pile: ${G.pile.length})`, 'pl');
     afterPlay(pIdx);
     return;
   }
@@ -1543,28 +1582,48 @@ function botTurn(pIdx){
     return;
   }
   if(d.act === 'PLAY'){
-    // bot responds by playing 1–4 cards of active rank
+    const P = PROFILE[pIdx] || PROFILE[1];
     const hand = G.hands[pIdx];
     const matchIdx = [];
     for(let i=0;i<hand.length;i++) if(hand[i].rank===G.activeRank) matchIdx.push(i);
-    let n;
-    let picks;
+    let n, picks;
+
     if(matchIdx.length === 0){
-      // Must bluff — take smallest-risk (1 card) of any
-      n = 1;
-      picks = [0];
+      // Forced bluff — personality decides how big
+      if(rng() < P.bluffWhenForced){
+        n = 1 + Math.floor(rng()*2); // 1 or 2 bluff cards
+      } else {
+        // Tiny bluff
+        n = 1;
+      }
+      n = Math.min(n, hand.length, 4);
+      picks = [];
+      for(let i=0; i<hand.length && picks.length<n; i++) picks.push(i);
     } else {
       n = Math.min(4, matchIdx.length);
-      // Sometimes bluff-augment (noise)
-      if(rng() < 0.15 && n < 4){
-        // play one more non-matching as bluff
+      // Personality: The Kid pads claims with extra bluff cards
+      if(rng() < (P.bluffWhenLeading*0.8) && n < 4 && hand.length > matchIdx.length){
         const extra = [];
         for(let i=0;i<hand.length;i++) if(!matchIdx.includes(i)){ extra.push(i); break; }
         picks = matchIdx.slice(0,n).concat(extra);
         n = picks.length;
       } else {
-        picks = matchIdx.slice(0,n);
+        picks = matchIdx.slice(0, n);
       }
+    }
+    // Safety — never try to play more than you hold
+    picks = picks.slice(0, Math.min(n, hand.length));
+    n = picks.length;
+    if(n === 0){
+      // Fall through to PASS if somehow nothing picked
+      logEvent(PLAYERS[pIdx], 'passes', '(no play available)', 'ps');
+      G.passesSincePlay++;
+      advanceTurn();
+      render();
+      checkSafeAndEnd();
+      if(G.phase !== 'IN_GAME') return;
+      step();
+      return;
     }
     const cards = picks.map(i=>hand[i]);
     picks.sort((a,b)=>b-a).forEach(i=>hand.splice(i,1));
@@ -1605,9 +1664,11 @@ function doChallenge(challengerIdx){
   const ov = $('revealOv');
   $('revealBadge').textContent = bad ? 'BLUFF CAUGHT' : 'TRUTHFUL CLAIM';
   $('revealBadge').style.background = bad ? '#16a34a' : 'var(--red)';
+  const wasWere = (idx) => idx === 0 ? 'were' : 'was';
+  const verb1 = (idx, v) => idx === 0 ? v : (v + (v.endsWith('s') ? '' : 's'));
   $('revealH').innerHTML = bad
-    ? `<em>${PLAYERS[challengerIdx]}</em> called it — and was right.`
-    : `<em>${PLAYERS[last.player]}</em> was telling the truth.`;
+    ? `<em>${PLAYERS[challengerIdx]}</em> called it — and ${wasWere(challengerIdx)} right.`
+    : `<em>${PLAYERS[last.player]}</em> ${wasWere(last.player)} telling the truth.`;
   $('revealClaim').innerHTML = `Claim was <b>${last.count} × ${last.claimedRank}</b>. Flipping the top of the pile…`;
   const host = $('revealCards');
   host.innerHTML = '';
@@ -1626,9 +1687,9 @@ function doChallenge(challengerIdx){
   });
   const verdict = $('revealVerdict');
   verdict.className = 'verdict' + (bad ? ' good' : '');
-  verdict.innerHTML = bad
-    ? `<b>${PLAYERS[loser]}</b> picks up the pile — <b>${G.pile.length} cards</b>. <b>${PLAYERS[winner]}</b> opens the next round.`
-    : `<b>${PLAYERS[loser]}</b> picks up the pile — <b>${G.pile.length} cards</b>. <b>${PLAYERS[winner]}</b> opens the next round.`;
+  const picks_v = (i) => i === 0 ? 'pick up' : 'picks up';
+  const opens_v = (i) => i === 0 ? 'open' : 'opens';
+  verdict.innerHTML = `<b>${PLAYERS[loser]}</b> ${picks_v(loser)} the pile — <b>${G.pile.length} cards</b>. <b>${PLAYERS[winner]}</b> ${opens_v(winner)} the next round.`;
   ov.classList.add('show');
 
   // Continue button → apply the resolution
@@ -1667,7 +1728,7 @@ function doChallenge(challengerIdx){
     }
     G.leader = nextLeader;
     G.turn = nextLeader;
-    logEvent('RESULT', bad ? 'bluff caught' : 'claim was true', `${PLAYERS[loser]} takes the pile`, 'ch');
+    logEvent('RESULT', bad ? 'bluff caught' : 'claim was true', `${PLAYERS[loser]} ${loser===0?'take':'takes'} the pile`, 'ch');
     G.phase = 'IN_GAME';
     if(winner === 0) sparkleBurst();
     render();
@@ -1697,8 +1758,7 @@ function afterPlay(pIdx){
   // Check hand empty → potential safe
   if(G.hands[pIdx].length === 0){
     G.safe[pIdx] = true;
-    logEvent(PLAYERS[pIdx], 'empties hand — SAFE (subject to challenge)', '', 'ch');
-    // Still allow challenge window: next player can challenge
+    logEvent(PLAYERS[pIdx], pIdx===0 ? 'empty your hand — SAFE (subject to challenge)' : 'empties hand — SAFE (subject to challenge)', '', 'ch');
   }
   advanceTurn();
   checkSafeAndEnd();
@@ -1722,7 +1782,7 @@ function advanceTurn(){
     G.leader = nxt;
     G.turn = nxt;
     G.round++;
-    banner('All passed — pile cleared. '+PLAYERS[nxt]+' leads the next round.', 'info', '↺');
+    banner('All passed — pile cleared. '+PLAYERS[nxt]+' '+(nxt===0?'lead':'leads')+' the next round.', 'info', '↺');
     return;
   }
   // Normal advance clockwise, skip safe
@@ -1816,7 +1876,7 @@ $('btnPass').addEventListener('click', ()=>{
     banner('Can\'t pass — you\'re opening the round. Pick cards to play.', 'info', 'i');
     return;
   }
-  logEvent('YOU','passes','', 'ps');
+  logEvent('YOU','pass','', 'ps');
   G.passesSincePlay++;
   advanceTurn();
   render();
@@ -1842,7 +1902,7 @@ $('btnGo').addEventListener('click', ()=>{
   G.lastPlay = {player:0, count:sel.length, claimedRank:claimRank, actualCards:cards};
   if(isLead) G.leader = 0;
   G.passesSincePlay = 0;
-  logEvent('YOU', (isLead?'leads ':'plays ') + sel.length + '× ' + claimRank, `(pile: ${G.pile.length})`, 'pl');
+  logEvent('YOU', (isLead?'lead ':'play ') + sel.length + '× ' + claimRank, `(pile: ${G.pile.length})`, 'pl');
   G.ui.mode = null;
   G.ui.selected = new Set();
   G.ui.claimRank = null;

@@ -370,6 +370,80 @@ footer .mono{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacin
 .reveal-card .cont{padding:12px 28px;background:var(--red);color:#fff;border:none;border-radius:8px;font:800 13px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .reveal-card .cont:hover{background:#ff3658}
 
+/* Start-screen overlay on top of the table */
+.start-ov{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;
+  background:linear-gradient(180deg,rgba(10,10,15,.88),rgba(10,10,15,.96));
+  backdrop-filter:blur(3px);z-index:20;text-align:center;padding:24px;
+  animation:fadein .3s ease;
+}
+.start-ov .start-cards{position:relative;width:220px;height:140px;margin-bottom:6px}
+.start-ov .sc{
+  position:absolute;top:0;left:50%;margin-left:-38px;
+  width:76px;height:110px;border-radius:8px;
+  background:linear-gradient(180deg,#fbfaf6,#e7e5df);
+  border:1.5px solid #0b0b0b;
+  box-shadow:0 12px 26px rgba(0,0,0,.65),inset 0 0 0 1.5px rgba(255,255,255,.75);
+  transform-origin:center 140%;
+  animation:dealIn .9s cubic-bezier(.2,.8,.3,1.2) both;
+}
+.start-ov .sc .rr{position:absolute;top:6px;left:8px;font:800 18px/1 Georgia,serif;color:#0b0b0b}
+.start-ov .sc .ss{position:absolute;top:30px;left:8px;font:800 16px/1 Georgia,serif;color:#0b0b0b}
+.start-ov .sc .mm{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;color:#0b0b0b;font-family:Georgia,serif}
+.start-ov .sc.red .rr,.start-ov .sc.red .ss,.start-ov .sc.red .mm{color:var(--red-2)}
+.start-ov .sc:nth-child(1){transform:rotate(-14deg) translateX(-50px);animation-delay:0s}
+.start-ov .sc:nth-child(2){transform:rotate(-2deg)  translateX(-14px) translateY(-6px);animation-delay:.15s}
+.start-ov .sc:nth-child(3){transform:rotate(10deg)  translateX(22px);animation-delay:.3s}
+.start-ov .sc:nth-child(4){transform:rotate(22deg)  translateX(54px) translateY(-4px);animation-delay:.45s}
+@keyframes dealIn{
+  0%{transform:translateY(200px) rotate(-90deg) scale(.4);opacity:0}
+  55%{opacity:1}
+  100%{opacity:1}
+}
+.start-ov h2{font-family:"Bricolage Grotesque",Inter,sans-serif;font-size:clamp(22px,3.4vw,34px);font-weight:800;color:var(--ink);line-height:1.1;max-width:540px}
+.start-ov h2 em{color:var(--red);font-style:italic}
+.start-ov p{font-size:14.5px;color:var(--ink-2);max-width:520px;line-height:1.5}
+.start-ov p b{color:var(--ink)}
+.start-ov .deal-btn{
+  margin-top:8px;padding:16px 34px;border:none;border-radius:10px;cursor:pointer;
+  background:linear-gradient(180deg,var(--red),var(--red-soft));color:#fff;
+  font:800 14px/1 "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;
+  box-shadow:0 14px 30px rgba(225,29,72,.45),inset 0 0 0 1px rgba(255,255,255,.2);
+  transition:transform .15s, box-shadow .15s, background .15s;
+}
+.start-ov .deal-btn:hover{transform:translateY(-2px);background:linear-gradient(180deg,#ff3658,var(--red));box-shadow:0 18px 38px rgba(225,29,72,.55)}
+.start-ov .deal-btn:active{transform:translateY(0)}
+.start-ov .start-hint{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+
+/* Easter-egg floating cards behind hero */
+.float-cards{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.float-cards .fc{
+  position:absolute;font:700 80px/1 Georgia,serif;opacity:.04;color:var(--red);
+  animation:drift 22s linear infinite;user-select:none;
+}
+.float-cards .fc:nth-child(1){top:12%;left:4%;animation-delay:0s;color:var(--gold);opacity:.035}
+.float-cards .fc:nth-child(2){top:32%;right:6%;animation-delay:-6s;font-size:120px}
+.float-cards .fc:nth-child(3){bottom:8%;left:14%;animation-delay:-12s;font-size:60px;color:var(--gold);opacity:.04}
+.float-cards .fc:nth-child(4){top:52%;left:44%;animation-delay:-3s;font-size:48px;opacity:.025}
+.float-cards .fc:nth-child(5){top:68%;right:28%;animation-delay:-15s;font-size:100px;color:var(--gold);opacity:.03}
+@keyframes drift{
+  0%{transform:translate(0,0) rotate(0)}
+  50%{transform:translate(14px,-18px) rotate(8deg)}
+  100%{transform:translate(0,0) rotate(0)}
+}
+header.hero, section.ctx{position:relative}
+header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
+
+/* Easter egg: little ace of spades watermark in the footer */
+.footer-ace{
+  display:inline-block;padding:0 6px;font:800 14px/1 Georgia,serif;color:var(--gold);
+  cursor:pointer;user-select:none;transition:transform .15s;
+}
+.footer-ace:hover{transform:rotate(14deg)}
+
+/* Responsive */
+
 /* Confetti */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
 .confetti .p{
@@ -394,21 +468,224 @@ footer .mono{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacin
   100%{transform:scale(2.2);opacity:0}
 }
 
-/* Responsive */
-@media (max-width:760px){
-  .opps{grid-template-columns:1fr}
-  .act-row{grid-template-columns:1fr}
-  .rank-grid{grid-template-columns:repeat(7,1fr)}
-  .card{width:44px;height:64px}
-  .card .mid{font-size:20px}
-  .card .r,.card .br{font-size:11px}
-  h1{font-size:36px}
+/* Rules dropdown */
+.rules{
+  background:linear-gradient(180deg,#141418,#0e0e13);
+  border:1px solid var(--line);border-radius:12px;
+  margin:6px 0 14px;overflow:hidden;
+}
+.rules[open]{border-color:var(--red-soft)}
+.rules > summary{
+  list-style:none;padding:14px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  color:var(--ink);font:700 15px/1.2 Inter,sans-serif;
+  transition:background .15s;
+}
+.rules > summary::-webkit-details-marker{display:none}
+.rules > summary:hover{background:rgba(225,29,72,.06)}
+.rules .sm-ic{font-size:18px}
+.rules .sm-txt{flex:1}
+.rules .sm-arrow{font-size:16px;color:var(--red);transition:transform .25s}
+.rules[open] .sm-arrow{transform:rotate(180deg)}
+.rules-body{padding:6px 18px 18px;border-top:1px solid var(--line);background:#0b0b10}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+.rule-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;position:relative}
+.rule-card .rule-n{
+  position:absolute;top:-9px;left:14px;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--red);color:#fff;
+  font:800 12px/1 "JetBrains Mono",monospace;
+  display:grid;place-items:center;
+  box-shadow:0 2px 6px rgba(225,29,72,.4);
+}
+.rule-card .rule-t{font-family:"Bricolage Grotesque",Inter,sans-serif;font-weight:800;font-size:15px;color:var(--ink);margin:4px 0 7px;line-height:1.2}
+.rule-card .rule-t em{color:var(--red);font-style:italic}
+.rule-card .rule-d{font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.rule-card .rule-d b{color:var(--ink)}
+.rule-card .rule-opts{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.rule-card .opt{font-size:13px;line-height:1.5;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start}
+.rule-card .opt b{color:var(--ink)}
+.rule-card .opt .tag{
+  flex:none;font:800 9px/1 "JetBrains Mono",monospace;letter-spacing:.1em;
+  padding:4px 6px;border-radius:3px;background:var(--panel-2);color:var(--ink);
+  border:1px solid var(--line-2);margin-top:1px;
+}
+.rule-card .opt .tag.ch{background:var(--red);color:#fff;border-color:var(--red)}
+.rule-card .opt .tag.pl{background:#166534;color:#bbf7d0;border-color:#166534}
+.rule-card .opt .tag.ps{background:var(--panel-2);color:var(--ink-3)}
+.rules-cheat{
+  margin-top:12px;padding:10px 14px;border-radius:8px;
+  background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);
+  font-size:12.5px;color:var(--ink-2);line-height:1.6;
+}
+.rules-cheat b{color:var(--gold)}
+.rules-cheat kbd{
+  font-family:"JetBrains Mono",monospace;font-size:11px;padding:2px 6px;
+  background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;
+  color:var(--ink);font-weight:700;margin:0 2px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:860px){
+  .t-head .meta{font-size:10px;gap:6px}
+  .t-head .meta .chip{padding:3px 7px}
+  .opps{grid-template-columns:1fr;gap:8px}
+  .hand{justify-content:flex-start}
+}
+
+@media (max-width:640px){
+  .wrap{padding:0 14px}
+  header.hero{padding:28px 0 12px}
+  h1{font-size:clamp(26px,7vw,34px);margin-bottom:12px;letter-spacing:-.02em}
+  .sub{font-size:14.5px;line-height:1.5;margin-bottom:12px}
+  .sub code{font-size:.88em}
+  .brand{font-size:10.5px;gap:8px;margin-bottom:14px;letter-spacing:.14em}
+  .brand .sep{display:none}
+
+  /* Rules */
+  .rules > summary{padding:12px 14px;font-size:13.5px;gap:8px}
+  .rules .sm-ic{font-size:16px}
+  .rules-body{padding:4px 12px 14px}
+  .rules-grid{grid-template-columns:1fr;gap:10px;margin-top:12px}
+  .rule-card{padding:12px 14px}
+  .rule-card .rule-t{font-size:14px}
+  .rule-card .rule-d,.rule-card .opt{font-size:12.5px}
+  .rule-card .rule-n{width:22px;height:22px;font-size:11px}
+  .rules-cheat{font-size:11.5px;padding:9px 12px}
+
+  /* Table */
+  .table{padding:14px 12px 12px;border-radius:12px;margin:6px 0 22px}
+  .t-head{gap:8px;margin-bottom:10px}
+  .t-head .ttl{font-size:14px;gap:8px}
+  .t-head .ttl .ico{width:16px;height:22px}
+  .t-head .ttl .ico::before{font-size:8px}
+  .t-head .ttl .ico::after{font-size:9px}
+  .t-head .meta{font-size:9.5px;letter-spacing:.1em}
+  .t-head .meta .chip{padding:3px 6px}
+
+  /* Opps */
+  .opps{margin-bottom:10px}
+  .opp{padding:10px 12px;gap:10px;border-radius:9px}
+  .opp.thinking::before{font-size:8px;padding:3px 6px;top:-7px;right:10px;letter-spacing:.14em}
+  .opp .av{width:36px;height:36px;font-size:16px;border-width:1.2px}
+  .opp .who .nm{font-size:12.5px;gap:6px;flex-wrap:wrap;line-height:1.15}
+  .opp .who .nm .tag{font-size:8px;padding:2px 4px;letter-spacing:.08em}
+  .opp .who .hand{font-size:10.5px;margin-top:2px}
+  .opp .cardback{display:none}
+  .opp.safe::after{font-size:8px;padding:3px 6px}
+
+  /* Center */
+  .center{padding:10px 12px 10px;border-radius:10px;margin-bottom:10px}
+  .center .lbl{font-size:9px;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+  .center .lbl .pill{padding:3px 6px;font-size:9px;letter-spacing:.08em}
+  .center .pilewrap{gap:10px;min-height:0;flex-wrap:nowrap;align-items:flex-start}
+  .pilestack{height:64px;min-width:48px}
+  .pilestack .pc{width:44px;height:60px}
+  .pilestack.empty::after{width:44px;height:60px;font-size:8.5px;letter-spacing:.12em}
+  .center .claim .big{font-size:15px;line-height:1.2;margin-bottom:3px}
+  .center .claim .bot-line{font-size:10.5px;line-height:1.35}
+  .log{font-size:10.5px;max-height:78px;padding:8px 10px;line-height:1.55}
+  .log .ln time{font-size:9.5px;margin-right:6px}
+
+  /* Your hand */
+  .you{padding:12px 10px 12px;border-radius:10px}
+  .you .yh{gap:6px;margin-bottom:10px}
+  .you .yh .t{font-size:13.5px;gap:8px}
+  .you .yh .t .badge{font-size:8.5px;padding:4px 6px}
+  .you .yh .hint{font-size:10px;letter-spacing:.06em}
+
+  .hand{gap:3px;min-height:64px;justify-content:center}
+  .card{width:38px;height:56px;border-radius:5px}
+  .card .r,.card .br{font-size:10px;top:3px;left:3px}
+  .card .br{top:auto;bottom:3px;right:3px;left:auto}
+  .card .s{font-size:8px;top:13px;left:3px}
+  .card .mid{font-size:17px}
+  .card:hover{transform:none}
+  .card.sel{transform:translateY(-10px);outline-width:2.5px}
+
+  /* Actions */
+  .act-row{grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+  .act-btn{padding:11px 4px;font-size:11px;letter-spacing:.1em;border-radius:7px}
+  .act-btn .sub{font-size:8.5px;margin-top:3px;letter-spacing:.02em}
+
+  /* Pick box */
+  .ctl-box{padding:10px 10px;border-radius:8px;margin-top:10px}
+  .ctl-box .ct{font-size:10px;letter-spacing:.1em;margin-bottom:8px;line-height:1.45}
+  .rank-grid{grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+  .rankbtn{padding:9px 0;font-size:13px;border-radius:5px}
+  .count-row{gap:5px;margin-top:2px}
+  .count-row .cl{font-size:10px}
+  .confirm{gap:6px;margin-top:8px;flex-wrap:wrap}
+  .confirm .btn{padding:9px 14px;font-size:11px;flex:1;min-width:0}
+
+  .banner{padding:10px 12px;font-size:11.5px;gap:8px;margin-top:10px}
+  .banner .ic{width:20px;height:20px;font-size:12px}
+
+  /* Context */
+  section.ctx{padding:24px 0 18px}
+  section.ctx h2{font-size:22px;margin-bottom:6px;line-height:1.15}
+  section.ctx h2 .num{font-size:.58em;padding:3px 9px;margin-right:10px}
+  section.ctx p.lead{font-size:14px;margin-bottom:18px;line-height:1.5}
+  .findings{grid-template-columns:1fr;gap:10px}
+  .finding{padding:14px 16px}
+  .finding h3{font-size:15px}
+  .finding p{font-size:12.5px;line-height:1.45}
+
+  .fml{padding:14px 14px;font-size:12px;line-height:1.65;margin-top:16px}
+  .fml .line{grid-template-columns:5.5em 1fr;gap:8px;align-items:flex-start}
+  .fml .lbl{font-size:9.5px}
+
+  /* Challenge reveal overlay */
+  .reveal-ov{padding:18px}
+  .reveal-card{padding:22px 18px 18px;border-radius:12px}
+  .reveal-card .badge-big{font-size:9.5px;padding:5px 10px;letter-spacing:.18em}
+  .reveal-card h3{font-size:19px;line-height:1.2;margin-bottom:4px}
+  .reveal-card .claim-line{font-size:11px;margin-bottom:14px}
+  .reveal-card .flip-cards{gap:7px;margin:6px 0 12px}
+  .reveal-card .big-card{width:62px;height:90px;border-radius:6px}
+  .reveal-card .big-card .r,.reveal-card .big-card .br{font-size:14px;top:4px;left:5px}
+  .reveal-card .big-card .br{top:auto;bottom:4px;right:5px;left:auto}
+  .reveal-card .big-card .s{font-size:11px;top:20px;left:5px}
+  .reveal-card .big-card .mid{font-size:32px}
+  .reveal-card .big-card .stamp span{font-size:11px;padding:3px 6px;letter-spacing:.1em}
+  .reveal-card .verdict{font-size:11.5px;padding:10px 12px;line-height:1.45;margin-bottom:14px}
+  .reveal-card .cont{padding:11px 18px;font-size:11.5px;letter-spacing:.12em}
+
+  /* Modal */
+  .modal-card{padding:24px 20px;border-radius:12px}
+  .modal-card h3{font-size:26px;line-height:1.15}
+  .modal-card p{font-size:13.5px;line-height:1.5;margin-bottom:16px}
+  .modal-card .again{padding:12px 22px;font-size:11.5px;letter-spacing:.12em}
+
+  footer{padding:24px 0 28px;font-size:12px}
+  footer .wrap{flex-direction:column;text-align:center;gap:10px}
+  footer .mono{font-size:10px}
+}
+
+@media (max-width:400px){
+  .card{width:34px;height:50px}
+  .card .mid{font-size:15px}
+  .card .r,.card .br{font-size:9px}
+  .card .s{font-size:7px;top:12px}
+  .rankbtn{font-size:12px;padding:8px 0}
+  .act-btn{font-size:10.5px;padding:10px 2px}
+  .act-btn .sub{font-size:8px}
+  .t-head .meta{font-size:9px}
+  .reveal-card .big-card{width:52px;height:76px}
+  .reveal-card .big-card .mid{font-size:26px}
 }
 </style>
 </head>
 <body>
 
 <header class="hero">
+  <div class="float-cards" aria-hidden="true">
+    <span class="fc">♠</span>
+    <span class="fc">♥</span>
+    <span class="fc">♦</span>
+    <span class="fc">♣</span>
+    <span class="fc">♠</span>
+  </div>
   <div class="wrap">
     <div class="brand">
       <span class="dot"></span>
@@ -425,7 +702,78 @@ footer .mono{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacin
 
 <!-- ========== GAME TABLE ========== -->
 <div class="wrap">
+
+<!-- Rules dropdown -->
+<details class="rules">
+  <summary>
+    <span class="sm-ic">📖</span>
+    <span class="sm-txt">How to play Bluff — tap to expand the rules</span>
+    <span class="sm-arrow">▾</span>
+  </summary>
+  <div class="rules-body">
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-n">1</div>
+        <div class="rule-t">The goal</div>
+        <div class="rule-d">Get rid of all your cards. The <b>last player</b> still holding cards loses. Two bots want to do the same — it's a three-way race with lying allowed.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-n">2</div>
+        <div class="rule-t">Your turn to <em>open</em></div>
+        <div class="rule-d">When the pile is empty, pick <b>any rank</b> (2 through A). Place <b>1–4 cards</b> face down and claim they're that rank. You can tell the <b>truth</b> or <b>bluff</b> — nobody sees what you actually played.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-n">3</div>
+        <div class="rule-t">Your turn to <em>respond</em></div>
+        <div class="rule-d">Someone just claimed "N × rank". You pick one of three actions:</div>
+        <div class="rule-opts">
+          <div class="opt"><span class="tag ch">CHALL</span>"I don't believe you" — flip their cards. If they <b>lied</b>, they eat the pile. If they <b>told the truth</b>, <b>you</b> eat the pile.</div>
+          <div class="opt"><span class="tag pl">PLAY</span>Place 1–4 cards of your own, claiming the <b>same rank</b>. Truth or bluff. The pile grows.</div>
+          <div class="opt"><span class="tag ps">PASS</span>Skip your turn. The next player responds to the same claim.</div>
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-n">4</div>
+        <div class="rule-t">The pile clears when…</div>
+        <div class="rule-d">
+          • Everyone else <b>passes</b> a claim → the pile clears and the next player opens a fresh round with any rank.<br>
+          • A <b>challenge</b> happens → the loser picks up the <b>entire</b> pile.<br>
+          • The pile hits <b>12 cards</b> → it clears automatically and the leader picks again.
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-n">5</div>
+        <div class="rule-t">Going "safe"</div>
+        <div class="rule-d">Play your <b>last</b> cards and you're safe — you escaped the game. <b>Catch:</b> if the very next player challenges that final play and it was a bluff, you pick up the pile and come back into the game.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-n">6</div>
+        <div class="rule-t">The bots</div>
+        <div class="rule-d"><b>Doyle "The Godfather" Brunson</b> and <b>The Cincinnati Kid</b> don't guess. They run the same <b>hypergeometric</b> calculation the paper scores LLMs against — they compute P(bluff), then pick the action with the best expected value. Against them: math is <em>the</em> advantage, vibes are <em>the</em> trap.</div>
+      </div>
+    </div>
+    <div class="rules-cheat">
+      <b>Cheat sheet</b> &nbsp;·&nbsp; Pile cap <b>12</b> &nbsp;·&nbsp; 3 players · 52 cards · dealt <b>17 / 17 / 18</b> &nbsp;·&nbsp; Keyboard: <kbd>C</kbd> challenge · <kbd>P</kbd> play · <kbd>S</kbd> pass
+    </div>
+  </div>
+</details>
+
 <div class="table">
+
+  <!-- Start-screen overlay -->
+  <div class="start-ov" id="startOv">
+    <div class="start-cards">
+      <div class="sc"><div class="rr">A</div><div class="ss">♠</div><div class="mm">♠</div></div>
+      <div class="sc red"><div class="rr">K</div><div class="ss">♥</div><div class="mm">♥</div></div>
+      <div class="sc red"><div class="rr">Q</div><div class="ss">♦</div><div class="mm">♦</div></div>
+      <div class="sc"><div class="rr">J</div><div class="ss">♣</div><div class="mm">♣</div></div>
+    </div>
+    <h2>Ready to sit across <em>Doyle</em> and <em>The Kid</em>?</h2>
+    <p>A full <b>3-player Bluff</b> game — no tutorials, no easing in. The bots won't go easy. Read the rules above, then deal.</p>
+    <button class="deal-btn" id="startBtn">▸ Deal the cards</button>
+    <div class="start-hint">Tip: press <kbd style="font-family:JetBrains Mono,monospace;background:#17171d;padding:2px 6px;border-radius:3px;color:var(--ink)">C</kbd>&nbsp;/&nbsp;<kbd style="font-family:JetBrains Mono,monospace;background:#17171d;padding:2px 6px;border-radius:3px;color:var(--ink)">P</kbd>&nbsp;/&nbsp;<kbd style="font-family:JetBrains Mono,monospace;background:#17171d;padding:2px 6px;border-radius:3px;color:var(--ink)">S</kbd> to act fast</div>
+  </div>
+
   <div class="t-head">
     <div class="ttl"><span class="ico"></span>BluffBench Table — 3-player · 52 cards · pile ≤ 12</div>
     <div class="meta">
@@ -530,7 +878,7 @@ footer .mono{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacin
 
 <footer>
   <div class="wrap">
-    <span><b>BluffBench</b> · A thesis project by <b>Aryan Singh Dabas</b>, mentored by <b>Dr. Dhruv Kumar</b> · BITS Pilani</span>
+    <span><b>BluffBench</b> · A thesis project by <b>Aryan Singh Dabas</b>, mentored by <b>Dr. Dhruv Kumar</b> · BITS Pilani <span class="footer-ace" title="Psst — try typing ‘bluff’ anywhere on the page">♠</span></span>
     <span class="mono">EMNLP 2026 · aryan1iitdelhi@gmail.com</span>
   </div>
 </footer>
@@ -892,7 +1240,8 @@ function newGame(){
   setTimeout(step, 500);
 }
 
-// Main scheduler
+// Main scheduler — with watchdog so a bot can NEVER sit thinking forever
+let stepTick = 0;
 function step(){
   if(G.phase !== 'IN_GAME') return;
   render();
@@ -901,7 +1250,31 @@ function step(){
     return;
   }
   // Bot turn
-  setTimeout(()=>botTurn(G.turn), 900);
+  const myTick = ++stepTick;
+  const targetTurn = G.turn;
+  setTimeout(()=>{
+    if(G.phase !== 'IN_GAME') return;
+    if(G.turn !== targetTurn) return;
+    try { botTurn(targetTurn); }
+    catch(err){
+      console.error('botTurn threw:', err);
+      // Recover: pass the bot and move on
+      logEvent(PLAYERS[targetTurn], 'misplays (recovered)', '', 'ps');
+      G.passesSincePlay++;
+      advanceTurn();
+      render();
+      checkSafeAndEnd();
+      if(G.phase === 'IN_GAME') step();
+    }
+  }, 900);
+  // Watchdog: 5 s after we hand control to the bot, if it's still the same
+  // tick and still their turn, kick the scheduler again.
+  setTimeout(()=>{
+    if(G.phase === 'IN_GAME' && G.turn === targetTurn && stepTick === myTick){
+      console.warn('step watchdog fired — rescheduling bot turn');
+      step();
+    }
+  }, 4800);
 }
 
 // ---------- Bot AI (GoldenPolicyBot) ----------
@@ -940,7 +1313,10 @@ function botDecide(pIdx){
     {a:'PASS',  v:ev_pass  + noise()}
   ];
   picks.sort((a,b)=>b.v-a.v);
-  return {act:picks[0].a, ev:{chall:ev_chall,play:ev_play,pass:ev_pass, pBluff}};
+  const best = picks[0].a;
+  // Fallback: never return an unknown action
+  if(!['CHALL','PLAY','PASS'].includes(best)) return {act:'PASS'};
+  return {act:best, ev:{chall:ev_chall,play:ev_play,pass:ev_pass, pBluff}};
 }
 
 function botLead(pIdx){
@@ -1027,6 +1403,10 @@ function botTurn(pIdx){
     logEvent(PLAYERS[pIdx], 'passes', '', 'ps');
     G.passesSincePlay++;
     advanceTurn();
+    render();
+    checkSafeAndEnd();
+    if(G.phase !== 'IN_GAME') return;
+    step();
     return;
   }
 }
@@ -1077,7 +1457,10 @@ function doChallenge(challengerIdx){
 
   // Continue button → apply the resolution
   const cont = $('revealCont');
+  let done = false;
   cont.onclick = () => {
+    if(done) return;
+    done = true;
     ov.classList.remove('show');
     // Reveal publicly (record for bots' future P(bluff))
     last.actualCards.forEach(c => {
@@ -1089,19 +1472,28 @@ function doChallenge(challengerIdx){
       const order = Object.fromEntries(RANKS.map((r,i)=>[r,i]));
       G.hands[0].sort((a,b)=>order[a.rank]-order[b.rank] || a.suit.localeCompare(b.suit));
     }
+    // If a "safe" player got the pile back, they are no longer safe (rule 7.2)
+    if(G.safe[loser] && G.hands[loser].length > 0){
+      G.safe[loser] = false;
+      logEvent(PLAYERS[loser], 'back in the game', '(safe reversed)', 'ch');
+    }
+    // If the winner was safe-pending, confirm their safety (nothing to do — already flagged)
     G.pile = [];
     G.activeRank = null;
     G.lastPlay = null;
     G.passesSincePlay = 0;
     G.round++;
-    G.leader = winner;
-    G.turn = winner;
+    // If the winner is safe (they emptied and truth stood), leader becomes next non-safe clockwise
+    let nextLeader = winner;
+    if(G.safe[nextLeader]){
+      nextLeader = (nextLeader + 1) % 3;
+      while(G.safe[nextLeader]) nextLeader = (nextLeader + 1) % 3;
+    }
+    G.leader = nextLeader;
+    G.turn = nextLeader;
     logEvent('RESULT', bad ? 'bluff caught' : 'claim was true', `${PLAYERS[loser]} takes the pile`, 'ch');
     G.phase = 'IN_GAME';
-    // Small sparkle for user if they challenged well or avoided loss
-    if(winner === 0){
-      sparkleBurst();
-    }
+    if(winner === 0) sparkleBurst();
     render();
     checkSafeAndEnd();
     if(G.phase !== 'IN_GAME') return;
@@ -1296,8 +1688,58 @@ document.addEventListener('keydown', (e) => {
   else if(k === 's' && !$('btnPass').disabled) $('btnPass').click();
 });
 
+// ---------- Start button wiring ----------
+const startBtn = document.getElementById('startBtn');
+const startOv = document.getElementById('startOv');
+function beginGame(){
+  startOv.style.display = 'none';
+  newGame();
+}
+startBtn.addEventListener('click', beginGame);
+
+// ---------- Easter egg: type 'bluff' for a card shower ----------
+let eggBuf = '';
+document.addEventListener('keydown', (e) => {
+  if(!e.key || e.key.length !== 1) return;
+  eggBuf = (eggBuf + e.key.toLowerCase()).slice(-5);
+  if(eggBuf === 'bluff') { cardShower(); eggBuf = ''; }
+});
+function cardShower(){
+  const host = $('confetti');
+  const glyphs = ['♠','♥','♦','♣'];
+  for(let i=0;i<60;i++){
+    const el = document.createElement('div');
+    el.className = 'p';
+    const left = Math.random()*window.innerWidth;
+    const dx = (Math.random()-0.5)*300;
+    const rot = (Math.random()*720 - 360)|0;
+    const dur = 2.4 + Math.random()*1.8;
+    const delay = Math.random()*0.7;
+    const g = glyphs[i%4];
+    el.style.cssText = `
+      left:${left}px;background:transparent;width:auto;height:auto;
+      font:800 ${18+Math.random()*18}px/1 Georgia,serif;
+      color:${Math.random()<.5?'#e11d48':'#f5f3ef'};
+      --dx:${dx}px;--rot:${rot}deg;--dur:${dur}s;--delay:${delay}s;
+    `;
+    el.textContent = g;
+    host.appendChild(el);
+    setTimeout(()=>el.remove(), (dur+delay)*1000 + 200);
+  }
+}
+
+// Footer ace easter egg — click for a small card shower
+document.addEventListener('click', (e) => {
+  if(e.target && e.target.classList && e.target.classList.contains('footer-ace')){
+    cardShower();
+  }
+});
+
 // ---------- Boot ----------
-newGame();
+// Don't auto-start — wait for user to click Deal.
+// Render initial (empty) state under the start overlay.
+G.phase = 'IDLE';
+render();
 </script>
 
 </body>

@@ -1040,25 +1040,26 @@ const SHORT = ['YOU','DOYLE','THE KID'];
 //          Lower challenge margin, higher bluff rate, quicker plays.
 const PROFILE = [
   null,
-  { // Doyle
+  { // Doyle — tight grandmaster: patient, plays cards, rarely calls, rarely bluffs.
     name:'Doyle',
-    margin:{imp:-10, over:0.25, hyp:1.6},        // hypergeometric needs STRONG evidence
-    leaderTrust:0.45,                             // halves suspicion of an opener
-    bluffWhenLeading:0.08,
-    bluffWhenForced:0.25,
-    playBonus:0.0,                                 // neutral
-    challNoise:0.03,
-    confidenceFloorToChall:0.72                    // require pBluff ≥ 0.72 on hypergeometric
+    margin:{imp:-10, over:1.2, hyp:3.5},           // virtually never challenges on stats
+    leaderTrust:0.4,
+    bluffWhenLeading:0.05,
+    bluffWhenForced:0.18,
+    playBonus:0.6,                                  // strongly prefers to play
+    challNoise:0.02,
+    confidenceFloorToChall:0.88                    // hard bar before a stats-only call
   },
-  { // The Cincinnati Kid
+  { // The Cincinnati Kid — aggressive BLUFFER (not caller). Stages bold leads,
+    // pads responses, but only calls on real mathematical evidence.
     name:'The Kid',
-    margin:{imp:-10, over:-0.05, hyp:0.55},       // far quicker to pull the trigger
-    leaderTrust:0.75,                              // mostly believes openers but not always
-    bluffWhenLeading:0.28,                         // will stage a big bluff lead
+    margin:{imp:-10, over:0.55, hyp:2.5},
+    leaderTrust:0.65,
+    bluffWhenLeading:0.35,
     bluffWhenForced:0.55,
-    playBonus:0.25,                                // prefers to stay active
-    challNoise:0.12,                               // more volatile / human-like
-    confidenceFloorToChall:0.55
+    playBonus:0.55,
+    challNoise:0.05,
+    confidenceFloorToChall:0.78
   }
 ];
 const TOTAL = 52;
@@ -1443,13 +1444,26 @@ function botDecide(pIdx){
   let challMargin = P.margin.hyp;
 
   if(last.count > K_rem){
-    // IMPOSSIBLE — more claimed in one play than can exist unseen.
+    // IMPOSSIBLE — latest claim alone exceeds unseen copies of the rank.
     pBluff = 1.0; reason = 'impossible-claim'; challMargin = P.margin.imp;
   } else if(totalClaimedThisRound > K_rem){
-    // OVERCLAIM — round claims exceed capacity, bluff guaranteed somewhere.
-    const excess = totalClaimedThisRound - K_rem;
-    pBluff = Math.min(1, 0.55 + 0.35 * (excess / Math.max(1, totalClaimedThisRound)));
-    reason = 'overclaim'; challMargin = P.margin.over;
+    // OVERCLAIM — at least one play this round was a bluff. But we might not
+    // be able to pin it on the LATEST player; it could have been earlier.
+    const residualForLast = Math.max(0, K_rem - priorClaimedBeforeLast);
+    if(last.count > residualForLast){
+      // Latest player's claim exceeds the capacity *remaining after prior
+      // plays were truthful*. That's a strong personal accusation.
+      pBluff = 0.85;
+      reason = 'overclaim-personal';
+      challMargin = P.margin.over;
+    } else {
+      // Some earlier player bluffed — we can't confidently call this one.
+      // Treat it as uncertain (falls back to stats-branch margin).
+      pBluff = Math.min(0.6, (totalClaimedThisRound - K_rem) / totalClaimedThisRound);
+      reason = 'overclaim-general';
+      challMargin = P.margin.hyp;
+      if(pBluff < P.confidenceFloorToChall){ challMargin = 999; }
+    }
   } else {
     // No contradiction — hypergeometric.
     const K_effective = Math.max(0, K_rem - priorClaimedBeforeLast);
@@ -1482,13 +1496,16 @@ function botDecide(pIdx){
   const matching = countRank(G.hands[pIdx], G.activeRank);
   let ev_play;
   if(matching >= 1){
-    ev_play = Math.min(4, matching) * 0.9 + P.playBonus;
+    // Truthful play — strongly rewarded. Offloading cards is the point of the game.
+    ev_play = Math.min(4, matching) * 1.4 + P.playBonus;
   } else {
-    // No matches → forced bluff. Weight it by the bot's nerve.
-    const pCalled = (pIdx === 1) ? 0.45 : 0.28; // Doyle assumes he'll be called
-    ev_play = (1 - pCalled) * 1.0 - pCalled * (pile * 0.9) + P.playBonus;
+    // No matches → forced bluff. Weight it by the bot's nerve and pile size.
+    const pCalled = (pIdx === 1) ? 0.4 : 0.25;
+    const bluffSize = Math.max(1, Math.min(2, 1 + (rng()<P.bluffWhenForced ? 1 : 0)));
+    ev_play = (1 - pCalled) * bluffSize - pCalled * (pile * 0.8) + P.playBonus * 0.6;
   }
-  const ev_pass = 0;
+  // Slight bias toward PASS when hand is already small — preserve the lead.
+  const ev_pass = (G.hands[pIdx].length <= 4) ? 0.15 : 0;
 
   const noise = () => (rng() - 0.5) * P.challNoise;
   const finalChall = ev_chall + noise() - challMargin;
@@ -1573,8 +1590,9 @@ function botTurn(pIdx){
     // Log why the bot decided to challenge — usually an impossibility or overclaim.
     if(d.ev){
       const r = d.ev.reason;
-      const tag = r === 'impossible-claim' ? 'impossible — more claimed than can exist'
-                 : r === 'overclaim'        ? `overclaim (pile ${d.ev.totalClaimedThisRound} > ${d.ev.K_rem} unseen)`
+      const tag = r === 'impossible-claim'   ? 'impossible — more of that rank than can exist'
+                 : r === 'overclaim-personal' ? `overclaim vs you specifically (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem} possible)`
+                 : r === 'overclaim-general'  ? `round overclaim (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem})`
                  : `P(bluff)≈${(d.ev.pBluff*100)|0}%`;
       logEvent(PLAYERS[pIdx], 'reads the table', tag, 'ch');
     }

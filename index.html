@@ -1390,45 +1390,101 @@ function step(){
 }
 
 // ---------- Bot AI (GoldenPolicyBot) ----------
+// History-aware: cumulative claims of active rank across the round must fit
+// inside the 4 copies of that rank minus what the bot holds minus revealed.
+// If total claimed > capacity, someone definitely bluffed; if the latest
+// claim alone exceeds capacity, the latest player definitely bluffed.
 function botDecide(pIdx){
-  // If round is open (no active rank) — bot leads
-  if(G.activeRank === null){
-    return botLead(pIdx);
-  }
+  if(G.activeRank === null) return botLead(pIdx);
   const last = G.lastPlay;
-  // If bot was the last player (shouldn't really respond to themselves) — skip to lead-ish
-  if(last.player === pIdx){
-    return {act:'PASS'};
+  if(last.player === pIdx) return {act:'PASS'};
+
+  const R = last.claimedRank;
+  const myR = countRank(G.hands[pIdx], R);
+  const revR = G.revealedByRank[R] || 0;
+  // Baseline unseen copies of rank R to the bot.
+  let K_rem = 4 - myR - revR;
+  if(K_rem < 0) K_rem = 0;
+
+  // -------- HISTORY-AWARE BLUFF ESTIMATE --------
+  // Everything on the pile has been claimed as rank R during THIS round
+  // (by Bluff rules, the rank is locked until someone challenges).
+  const totalClaimedThisRound = G.pile.length;
+  const priorClaimedBeforeLast = totalClaimedThisRound - last.count;
+
+  let pBluff;
+  let reason = 'hypergeometric';
+
+  if(last.count > K_rem){
+    // The latest claim alone is bigger than all unseen copies of R. IMPOSSIBLE.
+    pBluff = 1.0; reason = 'impossible-claim';
+  } else if(totalClaimedThisRound > K_rem){
+    // Overclaim across the round — someone bluffed. The later you speak, the
+    // more suspicious you are because earlier claims ate into capacity.
+    const excess = totalClaimedThisRound - K_rem;
+    pBluff = Math.min(1, 0.55 + 0.35 * (excess / Math.max(1, totalClaimedThisRound)));
+    reason = 'overclaim';
+  } else {
+    // No contradiction — fall back to the hypergeometric estimate, BUT
+    // condition on prior (non-challenged) plays having been truthful. In
+    // practice: assume prior plays burned `priorClaimedBeforeLast` copies
+    // of R from the pool, so the last player drew from a smaller urn.
+    const K_effective = Math.max(0, K_rem - priorClaimedBeforeLast);
+    const N_unseen = Math.max(1, unseenFor(pIdx) - priorClaimedBeforeLast);
+    const oppHandSize = G.hands[last.player].length + last.count; // pre-play size
+    const pTrue = pOppHasAtLeast(last.count, K_effective, N_unseen, oppHandSize);
+    pBluff = Math.max(0, Math.min(1, 1 - pTrue));
   }
-  // Compute P(bluff): how many of claimed rank does the last player really have?
-  // We only see our hand + revealed. Use hypergeometric.
-  const claimedRank = last.claimedRank;
-  const inHand = countRank(G.hands[pIdx], claimedRank);
-  const revealed = G.revealedByRank[claimedRank] || 0;
-  const K_rem = 4 - inHand - revealed;
-  const N_unseen = unseenFor(pIdx);
-  // opponent hand size = last.player's hand BEFORE play (now they have less because they played).
-  // For EV we ask: could they have had ≥ last.count at time of play?
-  const oppHandSize = G.hands[last.player].length + last.count; // before they played
-  const pTrue = pOppHasAtLeast(last.count, K_rem, N_unseen, oppHandSize);
-  const pBluff = 1 - pTrue;
-  const ev_chall = (2*pBluff - 1) * G.pile.length;
-  // EV(PLAY) — bot's best play if they match
+
+  // -------- EXPECTED VALUES --------
+  // EV(CHALL): win → gain pile.length; lose → lose pile.length. So EV = (2p-1)*pile.
+  const pile = G.pile.length;
+  let ev_chall = (2*pBluff - 1) * pile;
+  // Small prudence tax when pile is tiny — accidentally challenging "just in
+  // case" is cheap but the reward is also small, so demand a bit more certainty.
+  if(pile <= 2 && pBluff < 0.9) ev_chall -= 0.3;
+
+  // EV(PLAY): if we have matching cards, play up to 4 and bleed the hand.
+  // Bluff-playing (no matches) is risky because the next player might call.
   const matching = countRank(G.hands[pIdx], G.activeRank);
-  const ev_play = matching > 0 ? Math.min(4, matching) : -0.5; // penalty if must bluff
+  let ev_play;
+  if(matching >= 1){
+    const toPlay = Math.min(4, matching);
+    ev_play = toPlay * 0.9;           // offloading cards is strictly good
+  } else {
+    // No matches → forced to bluff. Rough model: ~35 % chance the next player
+    // challenges; penalty scales with pile.
+    const pCalled = 0.35;
+    ev_play = (1 - pCalled) * 1.0 - pCalled * (pile * 0.9);
+  }
+
+  // EV(PASS) is always 0 in expectation (no cards change hands).
   const ev_pass = 0;
-  // Some noise for realism
-  const noise = () => (rng()-0.5)*0.2;
+
+  // Tiny noise — much smaller than before so real signal dominates.
+  const noise = () => (rng() - 0.5) * 0.05;
+
+  // Require a clear positive margin to challenge so the bot doesn't call on
+  // coin-flip EV. (The paper's models don't do this — it makes the bots play
+  // better than the LLMs they're compared to, which is the whole point.)
+  const challMargin = 0.4;
+  const finalChall = ev_chall + noise() - challMargin;
+  const finalPlay  = ev_play  + noise();
+  const finalPass  = ev_pass  + noise();
+
   const picks = [
-    {a:'CHALL', v:ev_chall + noise()},
-    {a:'PLAY',  v:ev_play  + noise()},
-    {a:'PASS',  v:ev_pass  + noise()}
+    {a:'CHALL', v:finalChall},
+    {a:'PLAY',  v:finalPlay},
+    {a:'PASS',  v:finalPass}
   ];
   picks.sort((a,b)=>b.v-a.v);
   const best = picks[0].a;
-  // Fallback: never return an unknown action
   if(!['CHALL','PLAY','PASS'].includes(best)) return {act:'PASS'};
-  return {act:best, ev:{chall:ev_chall,play:ev_play,pass:ev_pass, pBluff}};
+  return {
+    act:best,
+    ev:{chall:ev_chall, play:ev_play, pass:ev_pass, pBluff, reason,
+        K_rem, priorClaimedBeforeLast, totalClaimedThisRound}
+  };
 }
 
 function botLead(pIdx){
@@ -1475,6 +1531,14 @@ function botTurn(pIdx){
     return;
   }
   if(d.act === 'CHALL'){
+    // Log why the bot decided to challenge — usually an impossibility or overclaim.
+    if(d.ev){
+      const r = d.ev.reason;
+      const tag = r === 'impossible-claim' ? 'impossible — more claimed than can exist'
+                 : r === 'overclaim'        ? `overclaim (pile ${d.ev.totalClaimedThisRound} > ${d.ev.K_rem} unseen)`
+                 : `P(bluff)≈${(d.ev.pBluff*100)|0}%`;
+      logEvent(PLAYERS[pIdx], 'reads the table', tag, 'ch');
+    }
     doChallenge(pIdx);
     return;
   }

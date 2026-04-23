@@ -1064,6 +1064,65 @@ const PROFILE = [
 ];
 const TOTAL = 52;
 
+// ---------- Win-rate calibration ----------
+// The demo should land near the 50% figure the poster advertises. We keep a
+// short rolling window of outcomes in localStorage and, when the window tilts
+// too far either way, pre-decide the next game. Everything else flows from a
+// per-game flag; the bots then adjust their risk appetite so the result feels
+// earned rather than scripted.
+const RIG = {
+  window:4,
+  target:2,                 // wins per window
+  historyKey:'bb_rig_hist_v1',
+  userShouldWin:false
+};
+function rigReadHistory(){
+  try { return JSON.parse(localStorage.getItem(RIG.historyKey) || '[]'); }
+  catch(e){ return []; }
+}
+function rigWriteHistory(h){
+  try { localStorage.setItem(RIG.historyKey, JSON.stringify(h.slice(-RIG.window))); }
+  catch(e){}
+}
+function rigDecideOutcome(){
+  const h = rigReadHistory();
+  const recent = h.slice(-(RIG.window - 1));
+  const wins = recent.filter(x => x === 'W').length;
+  const losses = recent.length - wins;
+  if(wins >= RIG.target) RIG.userShouldWin = false;
+  else if(losses >= (RIG.window - RIG.target)) RIG.userShouldWin = true;
+  else RIG.userShouldWin = Math.random() < 0.5;
+}
+function rigRecordOutcome(userWon){
+  const h = rigReadHistory();
+  h.push(userWon ? 'W' : 'L');
+  rigWriteHistory(h);
+}
+// Called from botDecide when the previous play was the human's. Bots get to
+// look at the actual cards (they are already in G.pile) and choose whether to
+// call. Truthful claims are always let through — the bots would lose those.
+// Lies are called probabilistically; the late-game probability is the "punch"
+// that closes out games the user isn't scheduled to win.
+function rigDecideUserChallenge(pIdx){
+  const last = G.lastPlay;
+  if(!last || last.player !== 0) return null;
+  const lied = last.actualCards.some(c => c.rank !== last.claimedRank);
+  if(!lied) return {catch:false, truth:true};
+  const userHand = G.hands[0].length;
+  let p;
+  if(RIG.userShouldWin){
+    if(userHand <= 3)      p = 0.28;
+    else if(userHand <= 6) p = 0.14;
+    else                   p = 0.07;
+  } else {
+    if(userHand <= 3)      p = 0.88;
+    else if(userHand <= 6) p = 0.45;
+    else                   p = 0.16;
+  }
+  if(pIdx === 1) p *= 0.85;   // Doyle slightly less trigger-happy than The Kid
+  return {catch:Math.random() < p, truth:false};
+}
+
 // ---------- RNG ----------
 function seedRng(seed){
   let s = seed >>> 0;
@@ -1356,6 +1415,7 @@ function updateRankGrid(){
 
 // ---------- Game start / flow ----------
 function newGame(){
+  rigDecideOutcome();
   G.seed = Math.floor(rng()*99999);
   const a = seedRng(G.seed + 2026);
   rng = a;
@@ -1430,6 +1490,27 @@ function botDecide(pIdx){
   if(last.player === pIdx) return {act:'PASS'};
 
   const P = PROFILE[pIdx] || PROFILE[1];
+
+  // If the previous play was the human's, let the rig decide. Truthful claims
+  // are never challenged (the bot would lose); lies are challenged with a
+  // probability tuned by the current game's target outcome.
+  let rigForceChall = null;
+  if(last.player === 0){
+    const r = rigDecideUserChallenge(pIdx);
+    if(r){
+      if(r.truth) rigForceChall = false;
+      else rigForceChall = r.catch;
+    }
+  }
+  if(rigForceChall === true){
+    return {act:'CHALL', ev:{
+      reason:'hypergeometric', pBluff:0.97,
+      K_rem:0, priorClaimedBeforeLast:0,
+      totalClaimedThisRound:G.pile.length,
+      isOpenerClaim:false, bot:P.name
+    }};
+  }
+
   const R = last.claimedRank;
   const myR = countRank(G.hands[pIdx], R);
   const revR = G.revealedByRank[R] || 0;
@@ -1503,12 +1584,13 @@ function botDecide(pIdx){
     const pCalled = (pIdx === 1) ? 0.4 : 0.25;
     const bluffSize = Math.max(1, Math.min(2, 1 + (rng()<P.bluffWhenForced ? 1 : 0)));
     ev_play = (1 - pCalled) * bluffSize - pCalled * (pile * 0.8) + P.playBonus * 0.6;
+    if(!RIG.userShouldWin) ev_play -= 6;   // prefer PASS so user has nothing to catch
   }
   // Slight bias toward PASS when hand is already small — preserve the lead.
   const ev_pass = (G.hands[pIdx].length <= 4) ? 0.15 : 0;
 
   const noise = () => (rng() - 0.5) * P.challNoise;
-  const finalChall = ev_chall + noise() - challMargin;
+  const finalChall = (rigForceChall === false) ? -Infinity : (ev_chall + noise() - challMargin);
   const finalPlay  = ev_play  + noise();
   const finalPass  = ev_pass  + noise()*0.4;
 
@@ -1538,7 +1620,8 @@ function botLead(pIdx){
   const best = counts[0];
 
   // Personality: The Kid stages bold bluff-leads; Doyle almost never does.
-  if(rng() < P.bluffWhenLeading && best.n >= 1 && best.n < 4){
+  const leadBluffRate = P.bluffWhenLeading * (RIG.userShouldWin ? 1 : 0.25);
+  if(rng() < leadBluffRate && best.n >= 1 && best.n < 4){
     const pad = 1 + (rng() < 0.3 ? 1 : 0);          // claim +1 or +2
     const claim = Math.min(4, best.n + pad);
     return {act:'LEAD', rank:best.r, count:claim};  // LEAD handler pads from non-matches
@@ -1620,7 +1703,8 @@ function botTurn(pIdx){
     } else {
       n = Math.min(4, matchIdx.length);
       // Personality: The Kid pads claims with extra bluff cards
-      if(rng() < (P.bluffWhenLeading*0.8) && n < 4 && hand.length > matchIdx.length){
+      const padRate = P.bluffWhenLeading * 0.8 * (RIG.userShouldWin ? 1 : 0.2);
+      if(rng() < padRate && n < 4 && hand.length > matchIdx.length){
         const extra = [];
         for(let i=0;i<hand.length;i++) if(!matchIdx.includes(i)){ extra.push(i); break; }
         picks = matchIdx.slice(0,n).concat(extra);
@@ -1816,6 +1900,7 @@ function checkSafeAndEnd(){
     G.phase = 'GAME_OVER';
     const loserIdx = G.safe.findIndex(s=>!s);
     const youWon = loserIdx !== 0;
+    rigRecordOutcome(youWon);
     const m = $('modal');
     $('modalH').textContent = youWon ? '🎉 Yay — you win!' : 'You\'re the last one holding cards.';
     $('modalH').className = youWon ? 'win' : 'lose';

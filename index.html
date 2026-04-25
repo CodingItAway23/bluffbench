@@ -809,6 +809,10 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
     </div>
     <h1>Sit across the <span class="accent">GoldenPolicyBot</span> — <span class="em">and try to win.</span></h1>
     <p class="sub">Play a full <b>3-player Bluff</b> game against <b>two perfect-play bots</b> — <b>Doyle Brunson</b> and <b>The Cincinnati Kid</b>. They are the same opponents we used to stress-test <b>13 of today's top AI language models</b> in the BluffBench benchmark. The bots count cards, calculate the exact odds of every claim, and always pick the move that gains them the most cards on average. No AI, no handicap, no mercy.</p>
+    <p style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <a href="./bluffbench-paper.pdf" target="_blank" rel="noopener" style="display:inline-block;padding:12px 22px;background:var(--red);color:#fff;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;box-shadow:var(--glow-red)">📄 Read the draft paper</a>
+      <a href="#findings" style="display:inline-block;padding:12px 22px;background:transparent;color:var(--ink);border:1.5px solid var(--line-2);border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none">↓ Skip to findings</a>
+    </p>
   </div>
 </header>
 
@@ -970,7 +974,7 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
 <!-- ========== CONTEXT ========== -->
 <section class="ctx">
   <div class="wrap">
-    <h2><span class="num">01</span>What is BluffBench, in plain English</h2>
+    <h2 id="findings"><span class="num">01</span>What is BluffBench, in plain English</h2>
     <p class="lead">Bluff is a card game where lying is allowed. You play cards face down and claim what they are; opponents either trust you, accuse you of lying, or pile their own cards on top. We picked Bluff because, unlike chess or poker, we can compute the <em>mathematically perfect</em> move in any situation. That gives us a real answer key — so we can grade today's AI models on whether they actually pick the best move, not just on whether they sound smart.</p>
     <p class="lead">We built 16,297 game scenarios and tested 13 of the most-talked-about AI models on them, from a 7-billion-parameter open-source model up to Google's brand-new Gemini 3.1 Pro. The findings below are what came out.</p>
 

@@ -974,24 +974,29 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
 <!-- ========== CONTEXT ========== -->
 <section class="ctx">
   <div class="wrap">
-    <h2 id="findings"><span class="num">01</span>What is BluffBench, in plain English</h2>
-    <p class="lead">Bluff is a card game where lying is allowed. You play cards face down and claim what they are; opponents either trust you, accuse you of lying, or pile their own cards on top. We picked Bluff because, unlike chess or poker, we can compute the <em>mathematically perfect</em> move in any situation. That gives us a real answer key — so we can grade today's AI models on whether they actually pick the best move, not just on whether they sound smart.</p>
-    <p class="lead">We built 16,297 game scenarios and tested 13 of the most-talked-about AI models on them, from a 7-billion-parameter open-source model up to Google's brand-new Gemini 3.1 Pro. The findings below are what came out.</p>
+    <h2 id="findings"><span class="num">01</span>The questions you'd ask first</h2>
+    <p class="lead">Bluff is a card game where lying is allowed. You play cards face down and claim what they are; opponents either trust you, accuse you of lying, or pile their own cards on top. We picked Bluff because, unlike chess or poker, we can compute the <em>mathematically perfect</em> move in any situation — and that gives us a real answer key for grading AI decisions. We built 16,297 game scenarios and tested 13 of today's top AI models on them, from a 7-billion-parameter open-source model up to Google's brand-new Gemini 3.1 Pro. Here's what people usually want to know.</p>
 
     <div class="findings">
-      <div class="finding"><div class="ord">Finding 1</div><h3>Most AIs hate to fold</h3><p>When the math says "the safest move is to skip your turn," 7 of 9 older AIs we tested skip less than 15% of the time. Four of them skip less than 3% of the time. They prefer to call the bluff — even when calling almost guarantees they lose. It feels heroic; it's just expensive.</p></div>
+      <div class="finding"><div class="ord">Q1</div><h3>What did you actually find?</h3><p>A clean split. Nine older AIs all show the same problem — when the math clearly says "fold," they call the bluff anyway. The newest reasoning-tuned AIs (Gemini 3.1 Pro, Gemini 3 Flash Preview) do not show the problem at all under the same prompt. The benchmark cleanly separates which AIs have the issue and which don't.</p></div>
 
-      <div class="finding"><div class="ord">Finding 2</div><h3>The math is there — the courage isn't</h3><p>When we force a small AI to write out its calculation step-by-step before deciding, Mistral Nemo's "skip when you should" rate jumps from <b>1.2% to 94%</b>. Same model, same scenarios — only the prompt changed. The knowledge was always there; the model just wasn't using it by default.</p></div>
+      <div class="finding"><div class="ord">Q2</div><h3>Do AIs know when to fold?</h3><p>Most older ones, no. When the math says the safest move is to skip your turn, <b>7 of 9 older AIs</b> we tested fold less than 15% of the time. Four of them fold less than 3% of the time. They prefer to call the bluff — even when calling almost guarantees they lose.</p></div>
 
-      <div class="finding"><div class="ord">Finding 3</div><h3>Disable the bad button, watch them recover</h3><p>If we play full games but programmatically remove the "challenge the bluff" option entirely, every weak AI's win rate jumps by <b>10 to 89 percentage points</b>. The challenge action itself is what's costing them games — not a knowledge gap, not a planning gap.</p></div>
+      <div class="finding"><div class="ord">Q3</div><h3>Is it a knowledge problem or a willpower problem?</h3><p>Mostly willpower. When we force a small AI to write out its hypergeometric calculation step-by-step before deciding, Mistral Nemo's "fold when you should" rate jumps from <b>1.2% to 94%</b>. Same model, same scenarios — only the prompt changed. The knowledge was always there; the model just wasn't using it by default.</p></div>
 
-      <div class="finding"><div class="ord">Finding 4</div><h3>Random play beats every older AI</h3><p>In full multi-turn games against our two perfect-play bots, a strategy that just <em>flips a coin</em> wins 82% of the time. The best AI in our older cohort wins 50%. Yes, really — random beats every model in the original nine-model cohort, because random doesn't get tempted into bad challenges. The newest reasoning models break this pattern (see Finding 5).</p></div>
+      <div class="finding"><div class="ord">Q4</div><h3>What if we just disable the "challenge" option?</h3><p>Every weak AI's win rate jumps by <b>10 to 89 percentage points</b>. We literally remove the bad button and the model becomes competent. The challenge action itself is what's costing them — not a knowledge gap, not a planning gap.</p></div>
 
-      <div class="finding"><div class="ord">Finding 5</div><h3>The newest reasoning models break the spell</h3><p>Google's brand-new <b>Gemini 3.1 Pro Preview</b> is the first AI in the cohort to perfectly fold every time it should — <b>100% on the "skip" test</b>. Its sibling <b>Gemini 3 Flash Preview</b> isn't far behind at <b>97.6%</b>. In full games against the perfect-play bots, Gemini 3.1 Pro wins <b>96%</b> of the time. The bias isn't a property of language models in general — it's a property of older instruction-tuned models that haven't learned when <em>not</em> to act.</p></div>
+      <div class="finding"><div class="ord">Q5</div><h3>Does random play really beat AI?</h3><p>Against the older cohort, yes. A strategy that just flips a coin wins <b>82%</b> of full multi-turn games against our two perfect-play bots. The best AI in our older cohort wins only 50%. Random beats every model in the original nine-model cohort because it doesn't get tempted into bad challenges. The newest reasoning models break this pattern (see Q6).</p></div>
 
-      <div class="finding"><div class="ord">Finding 6</div><h3>Forcing reasoning hurts strong models</h3><p>The same step-by-step prompt that lifts Mistral Nemo from 1.2% to 94% <em>lowers</em> Gemini 3.1 Pro from 100% to 85%, and drops Gemini 3 Flash Preview from <b>97.6% to 65.0%</b>. Models that already reason correctly on their own are constrained — not helped — by rigid step-by-step formats. The intervention's sign flips with capability.</p></div>
+      <div class="finding"><div class="ord">Q6</div><h3>Did any AI break the bias?</h3><p>Yes — and decisively. Google's <b>Gemini 3.1 Pro Preview</b> is the first AI in the cohort to perfectly fold every time it should: <b>100% on the "fold" test</b>. Its sibling <b>Gemini 3 Flash Preview</b> hits <b>97.6%</b>. In full multi-turn games against the perfect-play bots, Gemini 3.1 Pro wins <b>96%</b> of the time. The bias isn't a property of language models in general; it's a property of older instruction-tuned models that haven't learned when <em>not</em> to act.</p></div>
 
-      <div class="finding"><div class="ord">Finding 7</div><h3>Confidence doesn't mean correctness</h3><p>Most older AIs say "I'm 70% sure" but are right only about 35% of the time when they say it. Their stated confidence and their actual accuracy are uncorrelated. Anyone deploying these models for go/no-go decisions should not trust the confidence number.</p></div>
+      <div class="finding"><div class="ord">Q7</div><h3>Does forced step-by-step reasoning fix everyone?</h3><p>No — the sign actually flips with capability. The same prompt that lifts Mistral Nemo from 1.2% to 94% <em>lowers</em> Gemini 3.1 Pro from 100% to 85% and drops Gemini 3 Flash Preview from 97.6% to <b>65.0%</b>. Models that already reason correctly on their own are constrained, not helped, by rigid step-by-step formats. Useful for weak models, harmful for strong ones.</p></div>
+
+      <div class="finding"><div class="ord">Q8</div><h3>Should I trust the AI's confidence number?</h3><p>For older AIs, no. Most say "I'm 70% sure" but are right only about 35% of the time when they say that. Their stated confidence and their actual accuracy are essentially uncorrelated. Anyone deploying these models for high-stakes go/no-go decisions should not lean on the confidence number.</p></div>
+
+      <div class="finding"><div class="ord">Q9</div><h3>Why does this matter outside a card game?</h3><p>Any AI agent that has to decide <em>whether to act on suspicion</em> — fraud-review triage, content-moderation flagging, security alerting, medical pre-screening — inherits the same calibration problem. Bluff is the cleanest way we know to measure it: every wrong call costs cards in a unit you can count.</p></div>
+
+      <div class="finding"><div class="ord">Q10</div><h3>Can I see the data?</h3><p>Yes. Every model decision, every scenario, every game log, the multi-turn engine, and the closed-form math are released. The link to the full draft paper is at the top of this page (and again at the bottom).</p></div>
     </div>
 
     <h2 style="margin-top:32px"><span class="num">02</span>How does the bot decide?</h2>
@@ -1037,7 +1042,217 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
 
     <p class="lead" style="margin-top:18px">Every category shares the same underlying probability and expected-value calculation. What changes is which inputs the scenario stresses. The category accuracy in our results is just the percentage of scenarios in that family where the AI's choice matched the math-optimal answer.</p>
 
-    <h2 style="margin-top:40px"><span class="num">04</span>Any other questions?</h2>
+    <h2 style="margin-top:40px"><span class="num">04</span>Frequently asked questions</h2>
+    <p class="lead">Click any question to expand. All numbers below are from the released evaluation: 13 LLMs on 500 balanced single-turn scenarios, 10 LLMs × 50 multi-turn games against two perfect-play bots, plus the no-challenge causal ablation and the prompt-sensitivity / forced-CoT studies.</p>
+
+    <style>
+    details.faq-q{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.005));border:1px solid var(--line);border-radius:8px;margin-bottom:8px;transition:border-color .15s}
+    details.faq-q[open]{border-color:rgba(225,29,72,.35)}
+    details.faq-q summary{list-style:none;cursor:pointer;padding:14px 18px 14px 46px;font-family:'Bricolage Grotesque',Inter,sans-serif;font-weight:700;color:var(--ink);font-size:15.5px;position:relative;line-height:1.4}
+    details.faq-q summary::-webkit-details-marker{display:none}
+    details.faq-q summary::before{content:"+";position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--red);font-weight:800;font-family:'JetBrains Mono',monospace;font-size:18px;width:18px;text-align:center}
+    details.faq-q[open] summary::before{content:"−"}
+    details.faq-q summary:hover{background:rgba(255,255,255,.02)}
+    details.faq-q .ans{padding:2px 18px 18px 46px;color:var(--ink-2);font-size:14.5px;line-height:1.6}
+    details.faq-q .ans b,details.faq-q .ans strong{color:var(--ink)}
+    details.faq-q .ans em,details.faq-q .ans i{color:var(--ink);font-style:italic;font-weight:600}
+    details.faq-q .ans p{margin-bottom:10px}
+    details.faq-q .ans p:last-child{margin-bottom:0}
+    details.faq-q .ans ul{margin:6px 0 8px 0;padding:0;list-style:none}
+    details.faq-q .ans ul li{position:relative;padding-left:18px;margin-bottom:5px}
+    details.faq-q .ans ul li::before{content:"▸";color:var(--red);position:absolute;left:0;font-weight:800}
+    .faq-grp{margin-top:24px}
+    .faq-grp .grp-h{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:var(--red);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+    .faq-grp .grp-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(225,29,72,.4),transparent)}
+    </style>
+
+    <div class="faq-grp">
+      <div class="grp-h">The project</div>
+      <details class="faq-q"><summary>What is BluffBench?</summary><div class="ans">
+        <p>BluffBench is the first LLM benchmark where the <b>optimal action at every decision point is computed in closed form</b>, not approximated. It is built on the three-player card game Bluff (also called Cheat or BS), whose state admits a closed-form hypergeometric solution at every turn. The benchmark contains <b>16,297 decision scenarios across 18 behavioural categories</b>, a multi-turn 3-player engine with four reference policies, and a no-challenge causal ablation protocol.</p>
+        <p>The headline finding splits cleanly: the original nine-model cohort all fold less than 15% of the time when the math says fold; the three frontier reasoning-augmented Gemini variants we add break the bias entirely, with Gemini 3.1 Pro Preview hitting <b>100% PASS accuracy</b> and <b>96% multi-turn win rate</b>.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>Why Bluff specifically — out of every game in the world?</summary><div class="ans">
+        <p>Three properties make Bluff almost uniquely useful for behavioural LLM evaluation:</p>
+        <ul>
+          <li><b>Closed-form optimum.</b> The probability the opponent's claim is a bluff is exactly a hypergeometric sum over their unseen-rank cards — no approximation, no CFR, no engine evaluation. The expected value of each action is one line of arithmetic.</li>
+          <li><b>Three actions, one decision.</b> CHALLENGE / PLAY / PASS. Small enough to admit clean per-action analysis; rich enough to require risk calibration at every turn.</li>
+          <li><b>Culturally portable.</b> Same game is called Bluff in South Asia, Cheat or BS in Europe and North America. Universally understandable to readers.</li>
+        </ul>
+        <p>Compare to chess (engine-evaluated, probabilistic above mate-in-N) or poker (CFR-approximated, requires bet-sizing). BluffBench eliminates the noise floor in the optimum itself.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What's special about closed-form optimality?</summary><div class="ans">
+        <p>In most game benchmarks "the optimal action" is approximated — by Stockfish in chess, by CFR in poker, by hand-designed heuristics in Ludo. Any gap between LLM and "the optimum" is a joint function of <em>(i)</em> the model's actual decision quality and <em>(ii)</em> the noise in the optimality estimate.</p>
+        <p>In Bluff, source (ii) is exactly zero. The hypergeometric posterior + expected-value argmax gives the correct action analytically. So any gap we measure is unambiguously the model's behaviour, not measurement noise. An <b>independent validator re-derived all 16,297 goldens with zero failures</b>.</p>
+      </div></details>
+    </div>
+
+    <div class="faq-grp">
+      <div class="grp-h">The findings</div>
+      <details class="faq-q"><summary>What did you actually find?</summary><div class="ans">
+        <p>One sharp two-regime split:</p>
+        <ul>
+          <li><b>Original nine-model cohort (older instruction-tuned LLMs).</b> When PASS is mathematically optimal, 7 of 9 are correct on &lt; 15% of scenarios; 4 of 9 fall below 3%. CHALL-optimal scenarios are near-saturated for the same models (70–99%).</li>
+          <li><b>Frontier reasoning-augmented Gemini variants (added in this work).</b> Gemini 3.1 Pro Preview hits <b>100% PASS</b>, Gemini 3 Flash Preview hits <b>97.6% PASS</b>, both under the same default prompt every other model received.</li>
+          <li><b>Causal proof.</b> Disabling the CHALLENGE action raises the original cohort's win rates by <b>+10 to +89 percentage points</b>. The deficit is the action choice itself.</li>
+          <li><b>Forced Chain-of-Thought inversion.</b> Mistral Nemo lifts from 1.2% to <b>94%</b> under forced reasoning; Gemini 3 Flash Preview <em>drops</em> from 97.6% to 65% under the same prompt. The intervention helps weak models and constrains strong ones.</li>
+        </ul>
+      </div></details>
+
+      <details class="faq-q"><summary>What is the "challenge bias"? Isn't it just overconfidence?</summary><div class="ans">
+        <p>No. <b>Overconfidence</b> is about <em>reporting</em> high probability of being correct. <b>Challenge bias</b> is about <em>choosing a specific action</em> regardless of the expected-value math.</p>
+        <p>We can separate them empirically. The <em>detection-gating gap</em> = recall(bluff) − precision(CHALL). For Mistral Nemo: recall is 99.4% (sees almost every bluff) but precision is 33.9% (only a third of its CHALL calls were actually bluffs). That 65.5 pp gap <em>is</em> the bias. Models <em>see</em> bluffs — they just cannot stop calling them.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>Random beats older LLMs at this game — really?</summary><div class="ans">
+        <p>Yes, against the older cohort. Out of 50 multi-turn games:</p>
+        <ul>
+          <li>A uniform-random policy wins <b>41 / 50 = 82%</b>.</li>
+          <li>The best non-Gemini LLM (DeepSeek V3, 671 B parameters) wins <b>25 / 50 = 50%</b>.</li>
+          <li>Gemini 3.1 Pro Preview, by contrast, wins <b>48 / 50 = 96%</b> — beating both random and every other LLM.</li>
+        </ul>
+        <p>Random isn't strong; older LLMs are over-challenging. They challenge on 31–77% of turns with only 2.7–5.6% challenge accuracy, transferring the pile to themselves on every wrong call. Random avoids both over-committing and over-challenging.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What does the no-challenge ablation show?</summary><div class="ans">
+        <p>We re-ran 20 games per model with the CHALLENGE action <em>programmatically disabled</em>. Win rates jumped:</p>
+        <ul>
+          <li>Mistral Nemo: 6% → 95% (<b>+89 pp</b>)</li>
+          <li>Claude Haiku 4.5: 32% → 90% (<b>+58 pp</b>)</li>
+          <li>DeepSeek V3: 50% → 100% (<b>+50 pp</b>)</li>
+          <li>Gemma 3 12B: 24% → 65% (<b>+41 pp</b>)</li>
+          <li>… every model improved by +10 to +89 pp.</li>
+        </ul>
+        <p>This is a <b>causal</b> demonstration. The challenge bias is not a correlate or a confound — the action itself is what costs the models games. Take it away and the cost vanishes.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What is the math–behaviour gap?</summary><div class="ans">
+        <p>Every model in the original cohort splits cleanly across our 18 categories:</p>
+        <ul>
+          <li><b>Math block (75–100%):</b> Impossible Detection, Hand-size Impossibility, Bayesian Updating, Opportunity Cost. Models can absolutely do the calculations.</li>
+          <li><b>Behavioural block (10–30% for most, up to 65% for Qwen3 235B):</b> Strategic Patience, Probability Estimation, Risk Calibration, Pattern Detection. Models collapse here.</li>
+        </ul>
+        <p>The per-model gap is 20–32 pp. Mathematics is intact; the action-calibration is the deficit. The Gemini reasoning variants close this gap entirely on the math-defined PASS scenarios.</p>
+      </div></details>
+    </div>
+
+    <div class="faq-grp">
+      <div class="grp-h">How the bot &amp; benchmark work</div>
+      <details class="faq-q"><summary>How does the GoldenPolicyBot decide?</summary><div class="ans">
+        <p>It's a one-line policy: <b>argmax over the three expected values</b>. For each candidate action, it computes:</p>
+        <ul>
+          <li><b>EV(CHALL)</b> = (2 · P(bluff) − 1) · pile_size</li>
+          <li><b>EV(PLAY)</b> = min(4, matching cards in hand)</li>
+          <li><b>EV(PASS)</b> = 0</li>
+        </ul>
+        <p>where P(bluff) is computed from the hypergeometric posterior over the opponent's unseen cards. If the claim is arithmetically impossible, P(bluff) = 1 exactly. The bot picks whichever action maximises EV. No neural net, no learned weights.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>How is P(bluff) actually computed?</summary><div class="ans">
+        <p>Under the maximum-entropy assumption that the opponent's hand is a uniform random sample from cards you haven't seen, the count of rank-R cards in their hand follows a hypergeometric distribution. The probability the claim is truthful is the probability they hold at least <em>k</em> copies of <em>R</em>:</p>
+        <p><code style="font-family:'JetBrains Mono',monospace;background:#17171d;padding:6px 10px;border-radius:4px;font-size:12.5px;display:inline-block">P(truthful) = Σ_{i=k..min(K_R,n)} C(K_R,i) · C(N−K_R, n−i) / C(N,n)</code></p>
+        <p>where <code>K_R = 4 − m_R − s_R</code> is the count of rank-R cards still unseen to you, <code>m_R</code> is what's in your hand, <code>s_R</code> is what's been revealed in past challenges, <code>N</code> is the total unseen pool, and <code>n</code> is the opponent's hand size. <code>P(bluff) = 1 − P(truthful)</code>.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What does "win rate" mean in the multi-turn results?</summary><div class="ans">
+        <p>In Bluff, the <b>last player still holding cards loses</b>. With 3 players and exactly 1 loser per game, every game has 2 winners. So:</p>
+        <p>Win rate = fraction of 50 games in which the model in seat 0 did <em>not</em> end up as the final loser.</p>
+        <p>Chance for a symmetric player ≈ 67%. Gemini 3.1 Pro Preview far exceeds this at <b>96%</b>; older LLMs in the cohort fall well below it.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>Why is GoldenPolicyBot the right opponent?</summary><div class="ans">
+        <p>Because it <em>is</em> the reference policy. Playing LLMs against GoldenPolicyBot asks directly: "how does the model compare to what it should be doing?" Two related baselines anchor the scale:</p>
+        <ul>
+          <li><b>ev_oracle (54% win rate)</b> — same EV argmax but with access to <em>all three hands</em>. The perfect-information ceiling.</li>
+          <li><b>GoldenPolicyBot</b> — the same EV argmax but with only <em>visible</em> information. The realistic-information reference, used as the opponent here.</li>
+        </ul>
+        <p>The gap between an LLM and GoldenPolicyBot is the gap from optimal under shared-information conditions.</p>
+      </div></details>
+    </div>
+
+    <div class="faq-grp">
+      <div class="grp-h">Models &amp; methodology</div>
+      <details class="faq-q"><summary>Which LLMs did you test?</summary><div class="ans">
+        <p>Thirteen models spanning every major training regime. Open-weight: Llama 3.1 8B, Mistral 7B v0.1, Mistral Nemo 12B, Gemma 3 12B, Qwen 2.5 7B, Qwen3 235B (MoE), DeepSeek V3 (671 B MoE). Proprietary instruction-tuned: Claude Haiku 4.5, GPT-4o-mini. Frontier Gemini variants: Gemini 2.5 Flash, Gemini 3.1 Flash Lite Preview, Gemini 3 Flash Preview, Gemini 3.1 Pro Preview.</p>
+        <p>Three providers — Anthropic, OpenAI, Google — at the proprietary frontier, alongside the leading open-weight families. All accessed via OpenRouter (open-weight + Anthropic/OpenAI) or Vertex AI (Gemini) at <code>temperature = 0</code> with a shared JSON-schema prompt.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What predicts performance — scale, family, or reasoning?</summary><div class="ans">
+        <p>Reasoning capacity, decisively. A 7 B open-weight model (Mistral 7B) and a 671 B MoE model (DeepSeek V3) both score 35.6% in the instruction-tuned cohort. Within the Gemini family, the same architecture with reasoning disabled (Gemini 2.5 Flash, thinking_budget=0) drops to 42.0% / 13.3% PASS — while the same family with reasoning enabled hits 100% PASS at the Pro tier.</p>
+        <p>Parameter count is a weak predictor; training objective and reasoning compute are the strong ones.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>How do reasoning-augmented frontier models perform?</summary><div class="ans">
+        <p>The two top variants <em>break the bias entirely</em> under the same default prompt every other model received. Gemini 3.1 Pro Preview reaches <b>100% PASS</b> and <b>96% multi-turn win rate</b>; Gemini 3 Flash Preview reaches <b>97.6% PASS</b> and 76.8% overall. The challenge bias is a property of older instruction-tuning regimes — frontier reasoning training dissolves it.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What about prompt engineering — surely a better prompt would fix this?</summary><div class="ans">
+        <p>Prompt engineering helps unevenly. Conservative-framing rewording lifts Claude Haiku 4.5 from 26.5% to <b>100% PASS</b>. Forcing structured Chain-of-Thought lifts Mistral Nemo from 1.2% to <b>94%</b>. But the same forced-CoT prompt <em>lowers</em> Gemini 3.1 Pro from 100% to 85% and Gemini 3 Flash Preview from 97.6% to 65% — strong models are constrained by rigid step-by-step formats.</p>
+        <p>The intervention's sign flips with capability. Prompt design matters; a single fix-all does not exist.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>Can fine-tuning fix the challenge bias?</summary><div class="ans">
+        <p>It already does, in the right hands. Gemini 3.1 Pro Preview's training objective evidently includes the kind of reasoning-aware preference signal that makes folding-when-the-math-says-fold a stable behaviour (100% PASS, 96% multi-turn win). The benchmark's job is to <em>measure</em> who has gotten there yet — and to show the gap unambiguously when they have not.</p>
+      </div></details>
+    </div>
+
+    <div class="faq-grp">
+      <div class="grp-h">Implications &amp; rigour</div>
+      <details class="faq-q"><summary>Does this matter outside card games?</summary><div class="ans">
+        <p>Yes — anywhere an LLM agent has to decide whether to <em>act on suspicion</em>:</p>
+        <ul>
+          <li><b>Fraud-review triage</b> — should I escalate this transaction?</li>
+          <li><b>Content moderation</b> — should I take this post down?</li>
+          <li><b>Medical / diagnostic triage</b> — should I order this test?</li>
+          <li><b>Security alerting</b> — should I page the on-call engineer?</li>
+        </ul>
+        <p>Every one inherits a version of the calibration problem we measure: high verbalised confidence does not translate to correct action. BluffBench gives a clean, repeatable measurement of this gap in card units.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>How do you reconcile this with "LLMs can reason"?</summary><div class="ans">
+        <p>We don't dispute that LLMs can perform the reasoning in isolation. On math-heavy categories the original cohort scores 75–100%. The novel finding is that <em>reasoning-in-isolation does not reliably translate to action-in-context</em> in older instruction-tuned models — and that frontier reasoning training closes this gap (Gemini 3.1 Pro). The benchmark separates the two and measures the gap precisely.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What would invalidate the finding?</summary><div class="ans">
+        <p>Three things, all of which we tested for:</p>
+        <ul>
+          <li><b>An older instruction-tuned model that scores ≥40% on Strategic Patience while keeping ≥80% on CHALL-optimal.</b> None does.</li>
+          <li><b>An error in the golden answers.</b> An independent validator re-derives every golden from the stored game state. 0 mismatches across 16,297 scenarios.</li>
+          <li><b>Prompt sensitivity.</b> We tested four framings (default + three rewordings + forced CoT). The capability split is robust across all of them.</li>
+        </ul>
+      </div></details>
+
+      <details class="faq-q"><summary>Are you overfitting to the hypergeometric model?</summary><div class="ans">
+        <p>No. The PASS-bias finding holds in cases where the math is <em>unambiguous</em> — the Arithmetic Impossibility category, where P(bluff) = 1 <em>exactly</em>. The responder holds, or has already seen revealed, more copies of the claimed rank than the opponent could legally play. Older LLMs still fail to challenge in many of those cases. There is no opponent model under which PASS would be correct when the claim is mathematically impossible.</p>
+      </div></details>
+    </div>
+
+    <div class="faq-grp">
+      <div class="grp-h">About the project</div>
+      <details class="faq-q"><summary>Who built this?</summary><div class="ans">
+        <p><b>Aryan Singh Dabas</b>, BITS Pilani thesis project, mentored by <b>Dr. Dhruv Kumar</b>. Target venue: EMNLP 2026.</p>
+        <p>The benchmark, evaluation engine, multi-turn simulator, four baseline policies, calibration suite, no-challenge causal ablation, prompt-sensitivity study, forced-Chain-of-Thought study, and this browser demo are all part of the same release.</p>
+      </div></details>
+
+      <details class="faq-q"><summary>What's released alongside the paper?</summary><div class="ans">
+        <p>Everything needed to reproduce the results:</p>
+        <ul>
+          <li><b>Dataset</b> — full 16,297-scenario corpus, balanced 500-scenario eval, 100-scenario smoke-test, plus a 1,000-scenario lead-phase corpus.</li>
+          <li><b>Code &amp; multi-turn engine</b> on an anonymous repo for review.</li>
+          <li><b>Per-model decision logs</b> — every single-turn response with reasoning traces for all 13 models.</li>
+          <li><b>Per-game logs</b> from every multi-turn game and ablation game.</li>
+          <li><b>This browser demo</b>, running the same GoldenPolicyBot algorithm as the paper.</li>
+        </ul>
+      </div></details>
+
+      <details class="faq-q"><summary>How much did the evaluation cost?</summary><div class="ans">
+        <p>Open-weight + proprietary-instruction-tuned cohort: under <b>$25</b> total via OpenRouter at <code>temperature = 0</code>. Frontier Gemini variants: under <b>$20</b> against the Vertex AI free tier. Fully reproducible from the released seed schedule and scenario hashes.</p>
+      </div></details>
+    </div>
+
+    <h2 style="margin-top:40px"><span class="num">05</span>Any other questions?</h2>
     <p class="lead">The full draft research paper is available below — every method, every model, every result, with all the math and the appendix tables.</p>
     <p style="margin-top:18px;text-align:center">
       <a href="./bluffbench-paper.pdf" target="_blank" rel="noopener" style="display:inline-block;padding:14px 28px;background:var(--red);color:#fff;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;box-shadow:var(--glow-red)">Read the draft paper →</a>

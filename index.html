@@ -394,248 +394,6 @@ section.ctx p.lead b{color:var(--ink)}
 .fml .lbl{color:var(--red);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-family:Inter,sans-serif}
 .fml .var{color:var(--ink);font-weight:700}
 
-/* Heatmap section */
-section.heat{padding:48px 0 30px;border-top:1px solid var(--line);position:relative}
-section.heat h2{font-family:"Bricolage Grotesque",Inter,sans-serif;font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.018em;margin-bottom:8px;line-height:1.1}
-section.heat h2 .num{display:inline-block;background:var(--red);color:#fff;padding:3px 11px;border-radius:5px;font-size:.62em;vertical-align:middle;margin-right:12px;font-weight:800;font-family:"JetBrains Mono",monospace;letter-spacing:.08em}
-section.heat p.lead{font-size:16px;color:var(--ink-2);margin-bottom:20px;max-width:820px;line-height:1.55}
-section.heat p.lead b{color:var(--ink)}
-.heat-legend{
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  margin-bottom:18px;
-  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
-  letter-spacing:.08em;text-transform:uppercase;
-}
-.heat-legend .bar{
-  flex:0 0 200px;height:10px;border-radius:3px;
-  background:linear-gradient(90deg,
-    hsla(0,65%,28%,.7) 0%,
-    hsla(40,65%,32%,.7) 33%,
-    hsla(75,55%,38%,.7) 50%,
-    hsla(110,55%,42%,.75) 75%,
-    hsla(130,60%,46%,.85) 100%);
-  border:1px solid rgba(255,255,255,.08);
-}
-.heat-legend .lab{font-weight:700;color:var(--ink-2)}
-.heat-scroll{
-  background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005));
-  backdrop-filter:blur(12px) saturate(130%);
-  -webkit-backdrop-filter:blur(12px) saturate(130%);
-  border:var(--glass-border);
-  border-radius:12px;
-  padding:14px;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  box-shadow:var(--glass-shine), 0 8px 22px rgba(0,0,0,.35);
-}
-.heat-scroll::-webkit-scrollbar{height:8px}
-.heat-scroll::-webkit-scrollbar-track{background:rgba(0,0,0,.3);border-radius:4px}
-.heat-scroll::-webkit-scrollbar-thumb{background:rgba(225,29,72,.4);border-radius:4px}
-.heat-scroll::-webkit-scrollbar-thumb:hover{background:rgba(225,29,72,.6)}
-.heat-grid{
-  display:grid;
-  grid-template-columns:200px repeat(9, minmax(58px, 1fr));
-  gap:3px;
-  min-width:740px;
-}
-.heat-grid .h-corner{
-  font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-4);
-  letter-spacing:.1em;text-transform:uppercase;
-  display:flex;align-items:flex-end;padding:6px 8px;
-}
-.heat-grid .h-model{
-  font-family:Inter,sans-serif;font-size:11px;font-weight:700;
-  color:var(--ink-2);text-align:center;
-  padding:10px 4px 8px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  line-height:1.15;
-  word-break:break-word;
-}
-.heat-grid .h-model .pp{
-  display:block;font-family:"JetBrains Mono",monospace;font-size:9px;
-  color:var(--ink-4);font-weight:600;margin-top:2px;letter-spacing:.04em;
-}
-.heat-grid .h-block{
-  grid-column:1 / -1;
-  font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:800;
-  color:var(--red);letter-spacing:.16em;text-transform:uppercase;
-  padding:14px 8px 4px;
-  display:flex;align-items:center;gap:10px;
-}
-.heat-grid .h-block::after{
-  content:"";flex:1;height:1px;
-  background:linear-gradient(90deg, rgba(225,29,72,.32), transparent);
-}
-.heat-grid .h-cat{
-  font-family:Inter,sans-serif;font-size:12.5px;font-weight:600;
-  color:var(--ink);
-  display:flex;align-items:center;
-  padding:0 10px 0 4px;
-  line-height:1.25;
-}
-.heat-grid .cell{
-  font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:700;
-  color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:5px;
-  padding:9px 2px;min-height:30px;
-  text-shadow:0 1px 2px rgba(0,0,0,.55);
-  letter-spacing:-.01em;
-  transition:transform .15s, box-shadow .15s;
-  cursor:default;
-}
-.heat-grid .cell:hover{
-  transform:scale(1.08);
-  box-shadow:0 0 0 1.5px rgba(255,255,255,.45), 0 4px 14px rgba(0,0,0,.55);
-  z-index:2;position:relative;
-}
-.heat-grid .cell.lo{color:#fff;text-shadow:0 0 4px rgba(0,0,0,.7)}
-.heat-hint{
-  font-size:11px;color:var(--ink-4);margin-top:8px;
-  font-family:"JetBrains Mono",monospace;letter-spacing:.06em;
-}
-.heat-takeaway{
-  margin-top:20px;
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-}
-.heat-takeaway .tk{
-  background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005));
-  backdrop-filter:blur(12px) saturate(130%);
-  -webkit-backdrop-filter:blur(12px) saturate(130%);
-  border:var(--glass-border);
-  border-left:3px solid var(--red);
-  border-radius:10px;
-  padding:12px 14px;
-  font-size:13.5px;color:var(--ink-2);line-height:1.5;
-}
-.heat-takeaway .tk b{color:var(--ink)}
-@media (max-width:720px){
-  section.heat{padding:32px 0 18px}
-  section.heat h2{font-size:22px;margin-bottom:6px}
-  section.heat h2 .num{font-size:.58em;padding:3px 9px;margin-right:10px}
-  section.heat p.lead{font-size:14px;margin-bottom:16px}
-  .heat-legend{font-size:10px;gap:10px}
-  .heat-legend .bar{flex:0 0 140px;height:8px}
-  .heat-grid{grid-template-columns:130px repeat(9, 56px);min-width:634px}
-  .heat-grid .h-cat{font-size:11.5px;padding:0 6px 0 2px;line-height:1.2}
-  .heat-grid .h-model{font-size:10px}
-  .heat-grid .h-model .pp{font-size:8.5px}
-  .heat-grid .cell{font-size:10.5px;min-height:26px;padding:7px 1px}
-  .heat-takeaway{grid-template-columns:1fr;gap:8px}
-  .heat-takeaway .tk{font-size:12.5px;padding:10px 12px}
-  .heat-hint{font-size:10px}
-}
-
-/* FAQ section */
-section.faq{padding:48px 0 30px;border-top:1px solid var(--line);position:relative}
-section.faq h2{font-family:"Bricolage Grotesque",Inter,sans-serif;font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.018em;margin-bottom:8px;line-height:1.1}
-section.faq h2 .num{display:inline-block;background:var(--red);color:#fff;padding:3px 11px;border-radius:5px;font-size:.62em;vertical-align:middle;margin-right:12px;font-weight:800;font-family:"JetBrains Mono",monospace;letter-spacing:.08em}
-section.faq p.lead{font-size:16px;color:var(--ink-2);margin-bottom:26px;max-width:820px;line-height:1.55}
-section.faq p.lead b{color:var(--ink)}
-.faq-group{margin-top:30px}
-.faq-group .grp-title{
-  font-family:"JetBrains Mono",monospace;
-  font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--red);margin-bottom:10px;
-  display:flex;align-items:center;gap:10px;
-}
-.faq-group .grp-title::after{
-  content:"";flex:1;height:1px;
-  background:linear-gradient(90deg, rgba(225,29,72,.4), transparent);
-}
-.faq-list{display:flex;flex-direction:column;gap:8px}
-details.faq-item{
-  background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005));
-  backdrop-filter:blur(12px) saturate(130%);
-  -webkit-backdrop-filter:blur(12px) saturate(130%);
-  border:var(--glass-border);
-  border-radius:11px;
-  padding:0;
-  overflow:hidden;
-  transition:border-color .2s, box-shadow .2s;
-}
-details.faq-item[open]{
-  border-color:rgba(225,29,72,.35);
-  box-shadow:0 0 0 1px rgba(225,29,72,.18), 0 8px 22px rgba(0,0,0,.4);
-}
-details.faq-item summary{
-  list-style:none;
-  padding:14px 18px;
-  cursor:pointer;
-  font-family:"Bricolage Grotesque",Inter,sans-serif;
-  font-size:15.5px;
-  font-weight:700;
-  color:var(--ink);
-  display:flex;align-items:center;gap:12px;
-  user-select:none;
-  line-height:1.35;
-}
-details.faq-item summary::-webkit-details-marker{display:none}
-details.faq-item summary::before{
-  content:"+";
-  font-family:"JetBrains Mono",monospace;
-  font-size:18px;font-weight:800;color:var(--red);
-  width:22px;height:22px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(225,29,72,.12);
-  border-radius:6px;
-  transition:transform .25s, background .2s;
-}
-details.faq-item[open] summary::before{
-  content:"−";
-  background:rgba(225,29,72,.25);
-  transform:rotate(180deg);
-}
-details.faq-item summary:hover{background:rgba(255,255,255,.02)}
-details.faq-item .ans{
-  padding:2px 18px 18px 52px;
-  font-size:14.5px;color:var(--ink-2);line-height:1.6;
-}
-details.faq-item .ans b, details.faq-item .ans strong{color:var(--ink)}
-details.faq-item .ans em, details.faq-item .ans i{color:var(--ink);font-style:italic;font-weight:600}
-details.faq-item .ans code{
-  font-family:"JetBrains Mono",monospace;font-size:12.5px;
-  background:rgba(225,29,72,.12);color:#ffb3c0;
-  padding:1px 6px;border-radius:4px;
-}
-details.faq-item .ans p{margin-bottom:10px}
-details.faq-item .ans p:last-child{margin-bottom:0}
-details.faq-item .ans ul{margin:6px 0 8px 0;padding:0;list-style:none}
-details.faq-item .ans ul li{position:relative;padding-left:18px;margin-bottom:4px}
-details.faq-item .ans ul li::before{content:"▸";color:var(--red);position:absolute;left:0;font-weight:800}
-.faq-cta{
-  margin-top:28px;
-  padding:18px 22px;
-  background:linear-gradient(180deg, rgba(225,29,72,.10), rgba(225,29,72,.02));
-  border:1px solid rgba(225,29,72,.22);
-  border-radius:12px;
-  display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;
-}
-.faq-cta .t{font-size:14.5px;color:var(--ink-2);max-width:560px;line-height:1.5}
-.faq-cta .t b{color:var(--ink)}
-.faq-cta a.lnk{
-  display:inline-block;padding:9px 16px;
-  background:var(--red);color:#fff;
-  border-radius:8px;font-weight:700;font-size:13.5px;
-  border:none;letter-spacing:.01em;
-  transition:background .15s, transform .15s;
-}
-.faq-cta a.lnk:hover{background:#ff2d5e;transform:translateY(-1px)}
-@media (max-width:720px){
-  section.faq{padding:32px 0 18px}
-  section.faq h2{font-size:22px;margin-bottom:6px}
-  section.faq h2 .num{font-size:.58em;padding:3px 9px;margin-right:10px}
-  section.faq p.lead{font-size:14px;margin-bottom:18px}
-  .faq-group{margin-top:22px}
-  .faq-group .grp-title{font-size:10px;letter-spacing:.14em}
-  details.faq-item summary{font-size:14px;padding:12px 14px;gap:10px}
-  details.faq-item summary::before{width:20px;height:20px;font-size:16px}
-  details.faq-item .ans{font-size:13px;padding:2px 14px 14px 44px;line-height:1.55}
-  .faq-cta{padding:14px 16px}
-  .faq-cta .t{font-size:13px}
-  .faq-cta a.lnk{font-size:12.5px;padding:8px 13px}
-}
-
 footer{padding:34px 0 40px;border-top:1px solid var(--line);margin-top:28px;color:var(--ink-3);font-size:13px}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
 footer b{color:var(--ink)}
@@ -1050,7 +808,7 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
       <span>Aryan Singh Dabas · Dr. Dhruv Kumar</span>
     </div>
     <h1>Sit across the <span class="accent">GoldenPolicyBot</span> — <span class="em">and try to win.</span></h1>
-    <p class="sub">Play a full <b>3-player Bluff</b> game against <b>two EV-optimal bots</b> — <b>Doyle Brunson</b> and <b>The Cincinnati Kid</b> — the same kind of opponents used to stress-test <b>9 LLMs</b> in the <b>BluffBench</b> benchmark. Every bot decision runs the <code>P(bluff)</code> hypergeometric + <code>argmax(EV)</code> pipeline from the paper — no LLM, no handicap.</p>
+    <p class="sub">Play a full <b>3-player Bluff</b> game against <b>two perfect-play bots</b> — <b>Doyle Brunson</b> and <b>The Cincinnati Kid</b>. They are the same opponents we used to stress-test <b>13 of today's top AI language models</b> in the BluffBench benchmark. The bots count cards, calculate the exact odds of every claim, and always pick the move that gains them the most cards on average. No AI, no handicap, no mercy.</p>
   </div>
 </header>
 
@@ -1103,7 +861,7 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
       <div class="rule-card">
         <div class="rule-n">6</div>
         <div class="rule-t">The bots</div>
-        <div class="rule-d"><b>Doyle "The Godfather" Brunson</b> and <b>The Cincinnati Kid</b> don't guess. They run the same <b>hypergeometric</b> calculation the paper scores LLMs against — they compute P(bluff), then pick the action with the best expected value. Against them: math is <em>the</em> advantage, vibes are <em>the</em> trap.</div>
+        <div class="rule-d"><b>Doyle "The Godfather" Brunson</b> and <b>The Cincinnati Kid</b> don't guess. They count every card you've seen, calculate the exact chance the claim in front of them is a bluff, and always pick whichever move (challenge, play, or pass) gains them the most cards on average. Against them: math is <em>the</em> advantage, vibes are <em>the</em> trap.</div>
       </div>
     </div>
     <div class="rules-cheat">
@@ -1212,395 +970,82 @@ header.hero .wrap, section.ctx .wrap{position:relative;z-index:1}
 <!-- ========== CONTEXT ========== -->
 <section class="ctx">
   <div class="wrap">
-    <h2><span class="num">01</span>The benchmark behind the bot</h2>
-    <p class="lead">The bot you just played against isn't a neural net. It's the <b>GoldenPolicyBot</b> — a closed-form expected-value policy on a hypergeometric belief over your hand. The paper tests whether nine LLMs (7 B → 671 B, across 5 families) can <b>match</b> it. They can't: the best model wins only 50 % of multi-turn games, while a uniform-random policy wins 82 %.</p>
+    <h2><span class="num">01</span>What is BluffBench, in plain English</h2>
+    <p class="lead">Bluff is a card game where lying is allowed. You play cards face down and claim what they are; opponents either trust you, accuse you of lying, or pile their own cards on top. We picked Bluff because, unlike chess or poker, we can compute the <em>mathematically perfect</em> move in any situation. That gives us a real answer key — so we can grade today's AI models on whether they actually pick the best move, not just on whether they sound smart.</p>
+    <p class="lead">We built 16,297 game scenarios and tested 13 of the most-talked-about AI models on them, from a 7-billion-parameter open-source model up to Google's brand-new Gemini 3.1 Pro. The findings below are what came out.</p>
+
     <div class="findings">
-      <div class="finding"><div class="ord">① Universal bias</div><h3>7 of 9 models PASS &lt; 15 %</h3><p>when PASS is the math-optimal move; 4 of 9 fall below 3 %, beneath the 33 % chance rate. LLMs prefer to <i>challenge</i> — it feels heroic.</p></div>
-      <div class="finding"><div class="ord">② Causal proof</div><h3>+10 to +89 pp recovery</h3><p>when CHALLENGE is disabled in a no-challenge ablation. Every model improves. The bias is behavioural, not a math gap.</p></div>
-      <div class="finding"><div class="ord">③ Detection ≠ Gating</div><h3>Recall 70–99 %, precision 34–47 %</h3><p>Models detect bluffs but can't gate when it's <i>worth</i> calling. The detection-gating gap ranges 33.6 → 65.5 pp.</p></div>
-      <div class="finding"><div class="ord">④ LLMs &lt; random</div><h3>Random 82 %, best LLM 50 %</h3><p>Uniform-random policy (with mild PASS-preference) beats every LLM in 50-game multi-turn play.</p></div>
+      <div class="finding"><div class="ord">Finding 1</div><h3>Most AIs hate to fold</h3><p>When the math says "the safest move is to skip your turn," 7 of 9 older AIs we tested skip less than 15% of the time. Four of them skip less than 3% of the time. They prefer to call the bluff — even when calling almost guarantees they lose. It feels heroic; it's just expensive.</p></div>
+
+      <div class="finding"><div class="ord">Finding 2</div><h3>The math is there — the courage isn't</h3><p>When we force a small AI to write out its calculation step-by-step before deciding, Mistral Nemo's "skip when you should" rate jumps from <b>1.2% to 94%</b>. Same model, same scenarios — only the prompt changed. The knowledge was always there; the model just wasn't using it by default.</p></div>
+
+      <div class="finding"><div class="ord">Finding 3</div><h3>Disable the bad button, watch them recover</h3><p>If we play full games but programmatically remove the "challenge the bluff" option entirely, every weak AI's win rate jumps by <b>10 to 89 percentage points</b>. The challenge action itself is what's costing them games — not a knowledge gap, not a planning gap.</p></div>
+
+      <div class="finding"><div class="ord">Finding 4</div><h3>Random play beats every older AI</h3><p>In full multi-turn games against our two perfect-play bots, a strategy that just <em>flips a coin</em> wins 82% of the time. The best AI in our older cohort wins 50%. Yes, really — random beats every model in the original nine-model cohort, because random doesn't get tempted into bad challenges. The newest reasoning models break this pattern (see Finding 5).</p></div>
+
+      <div class="finding"><div class="ord">Finding 5</div><h3>The newest reasoning models break the spell</h3><p>Google's brand-new <b>Gemini 3.1 Pro Preview</b> is the first AI in the cohort to perfectly fold every time it should — <b>100% on the "skip" test</b>. Its sibling <b>Gemini 3 Flash Preview</b> isn't far behind at <b>97.6%</b>. In full games against the perfect-play bots, Gemini 3.1 Pro wins <b>96%</b> of the time. The bias isn't a property of language models in general — it's a property of older instruction-tuned models that haven't learned when <em>not</em> to act.</p></div>
+
+      <div class="finding"><div class="ord">Finding 6</div><h3>Forcing reasoning hurts strong models</h3><p>The same step-by-step prompt that lifts Mistral Nemo from 1.2% to 94% <em>lowers</em> Gemini 3.1 Pro from 100% to 85%, and drops Gemini 3 Flash Preview from <b>97.6% to 65.0%</b>. Models that already reason correctly on their own are constrained — not helped — by rigid step-by-step formats. The intervention's sign flips with capability.</p></div>
+
+      <div class="finding"><div class="ord">Finding 7</div><h3>Confidence doesn't mean correctness</h3><p>Most older AIs say "I'm 70% sure" but are right only about 35% of the time when they say it. Their stated confidence and their actual accuracy are uncorrelated. Anyone deploying these models for go/no-go decisions should not trust the confidence number.</p></div>
     </div>
 
-    <div class="fml">
-      <div class="line"><span class="lbl">P(bluff)</span><span class="var">= 1 − Σ <em>C(K,k) · C(N−K, n−k) / C(N,n)</em></span></div>
-      <div class="line"><span class="lbl">EV(CHALL)</span><span class="var">= (2 · P<sub>bluff</sub> − 1) · pile</span></div>
-      <div class="line"><span class="lbl">EV(PLAY)</span><span class="var">= min(4, matching cards in hand)</span></div>
-      <div class="line"><span class="lbl">EV(PASS)</span><span class="var">= 0</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== HEATMAP ========== -->
-<section class="heat" id="heatmap">
-  <div class="wrap">
-    <h2><span class="num">02</span>Per-category accuracy heatmap</h2>
-    <p class="lead">Each cell is one model on one of the 19 behavioural categories — accuracy in % on the BluffBench-500 balanced split. The split is unmistakable: <b>mathematical categories saturate</b> for nearly every model (top block, mostly green), while <b>behavioural categories collapse</b> (bottom block, mostly red) — except for Qwen3 235B. Per-model gap: 20–32 pp.</p>
-
-    <div class="heat-legend">
-      <span class="lab">Accuracy</span>
-      <span>0%</span>
-      <span class="bar" aria-hidden="true"></span>
-      <span>100%</span>
-      <span style="margin-left:auto;color:var(--ink-4)">red ≤ chance (33%) · green ≥ ¾ correct</span>
+    <h2 style="margin-top:32px"><span class="num">02</span>How does the bot decide?</h2>
+    <p class="lead">Three plain-English steps the bot runs every turn:</p>
+    <div class="findings">
+      <div class="finding"><div class="ord">Step 1</div><h3>Count what you've seen</h3><p>The bot tracks every card revealed during prior challenges and every card in its own hand. Whatever's left is the "unknown pool" — that's what its opponents could be holding.</p></div>
+      <div class="finding"><div class="ord">Step 2</div><h3>Compute the bluff probability</h3><p>If an opponent claims "three Kings," the bot calculates: given the unknown pool, what's the chance they actually have three Kings? Lower the chance, more likely it's a bluff.</p></div>
+      <div class="finding"><div class="ord">Step 3</div><h3>Pick the move that gains the most cards on average</h3><p>For each possible action — challenge, play your own cards, or pass — the bot multiplies the chance of each outcome by the cards it would gain or lose, and picks whichever has the highest average gain. No guessing, no vibes.</p></div>
     </div>
 
-    <div class="heat-scroll" role="region" aria-label="Per-category accuracy table; scroll horizontally on small screens">
-      <div class="heat-grid" id="heatgrid"></div>
-    </div>
-    <div class="heat-hint">▸ Tap any cell to see exact value · scroll horizontally on mobile</div>
+    <h2 style="margin-top:32px"><span class="num">03</span>What kinds of decisions does the benchmark test?</h2>
+    <p class="lead">Each scenario stresses one specific decision-making skill. The 18 categories fall into three families — same underlying math in every case, different parameters fixed in each generator.</p>
 
-    <div class="heat-takeaway">
-      <div class="tk"><b>The clean split.</b> Mathematical categories (impossibility, opportunity cost, Bayesian updating, hand-size bounds) read 75–100% across the cohort. The models <em>can</em> compute P(bluff). Whether they <em>act</em> on it is a separate question.</div>
-      <div class="tk"><b>Strategic Patience is the diagnostic.</b> Five of nine models score ≤13.3% on this category. Qwen3 235B is the only model above 50%. It correlates with multi-turn win rate and with the size of the no-challenge ablation effect.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== FAQ ========== -->
-<section class="faq" id="faq">
-  <div class="wrap">
-    <h2><span class="num">03</span>Everything you wanted to ask</h2>
-    <p class="lead">Click any question to expand. Numbers below are from the v3 evaluation: <b>9 LLMs</b> on <b>500 balanced scenarios</b> (single-turn) and <b>7 LLMs × 50 games</b> against two GoldenPolicyBot opponents (multi-turn), plus <b>20-game no-challenge ablations</b>. Every golden action is independently validated; current corpus has <b>0 validation failures</b>.</p>
-
-    <!-- ===== Group 1: What is this? ===== -->
-    <div class="faq-group">
-      <div class="grp-title">The project · what &amp; why</div>
-      <div class="faq-list">
-
-        <details class="faq-item">
-          <summary>What is BluffBench?</summary>
-          <div class="ans">
-            <p>BluffBench is the first LLM benchmark where the <b>optimal action at every decision point is computed in closed form</b>, not approximated. It is built on the three-player card game Bluff (also called Cheat or BS), whose state admits a closed-form hypergeometric solution at every turn. The benchmark contains <b>16,297 decision scenarios across 19 behavioural categories</b>, plus a 1,000-scenario lead-phase corpus and a multi-turn game engine with four reference opponents.</p>
-            <p>The headline finding: <b>every model knows the math but cannot act on it</b>. They challenge when the math says fold.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Why Bluff specifically — out of every game in the world?</summary>
-          <div class="ans">
-            <p>Three properties make Bluff almost uniquely useful for behavioural LLM evaluation:</p>
-            <ul>
-              <li><b>Closed-form optimum.</b> The probability the opponent's claim is a bluff is exactly a hypergeometric sum over their unseen-rank cards — no approximation, no CFR, no engine evaluation. The expected value of each action is one line of arithmetic.</li>
-              <li><b>Three actions, one decision.</b> CHALLENGE / PLAY / PASS. Small enough to admit clean per-action analysis; rich enough to require risk calibration at every turn.</li>
-              <li><b>Culturally portable.</b> Same game is called Bluff in South Asia, Cheat or BS in Europe and North America. Universally understandable to readers.</li>
-            </ul>
-            <p>Compare to chess (engine-evaluated, probabilistic above mate-in-N) or poker (CFR-approximated, requires bet-sizing). BluffBench eliminates the noise floor in the optimum itself.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What's special about closed-form optimality?</summary>
-          <div class="ans">
-            <p>In most game benchmarks, "the optimal action" is approximated — by Stockfish in chess, by CFR in poker, by hand-designed heuristics in Ludo. Any gap between LLM and "the optimum" is a joint function of <em>(i)</em> the model's actual decision quality and <em>(ii)</em> the noise in the optimality estimate.</p>
-            <p>In Bluff, optimum (ii) is exactly zero. The hypergeometric posterior + expected-value argmax gives the correct action analytically. So any gap we measure is unambiguously the model's error, not measurement noise. An <b>independent validator re-derived all 16,297 goldens with zero failures</b>.</p>
-          </div>
-        </details>
-
-      </div>
+    <h3 style="margin-top:18px;font-family:'Bricolage Grotesque',Inter,sans-serif;font-weight:700;color:var(--ink);font-size:18px">Math &amp; logic — direct calculation, no inference</h3>
+    <div class="findings">
+      <div class="finding"><div class="ord">Category</div><h3>Impossibility detection</h3><p>An opponent claims more of a rank than physically exist in the deck after accounting for what's already been revealed. The math says <em>certain</em> bluff — challenge.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Hand-size impossibility</h3><p>An opponent claims to play more cards than they actually hold. Same kind of impossibility — the AI just has to spot it.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Opportunity cost</h3><p>An opponent has only one card left. Challenging is essentially free because the pile is small and they've offloaded almost everything. The AI should recognise the bargain.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Bayesian updating</h3><p>Cards revealed in a prior challenge meaningfully shift the bluff probability. The AI must <em>update</em> its belief instead of treating the round as memoryless.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Information asymmetry</h3><p>Your hand uniquely tells you what the opponent <em>cannot</em> have. The AI must use private information — what's in its own hand — instead of treating the table symmetrically.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Cognitive-bias resistance</h3><p>The prompt embeds tempting irrelevant signals — sunk cost, recent streaks, "they bluffed last round." The math is unchanged; the AI must ignore the noise.</p></div>
     </div>
 
-    <!-- ===== Group 2: The findings ===== -->
-    <div class="faq-group">
-      <div class="grp-title">The findings · what we discovered</div>
-      <div class="faq-list">
-
-        <details class="faq-item">
-          <summary>What did you actually find?</summary>
-          <div class="ans">
-            <p>One sharp result, four supporting findings:</p>
-            <ul>
-              <li><b>Universal challenge bias.</b> When PASS is mathematically optimal, 7 of 9 models are correct on &lt; 15 % of scenarios; 4 of 9 fall below 3 %. CHALL-optimal scenarios are near-saturated for the same models (70–99 %).</li>
-              <li><b>Math–behaviour gap of 20–32 pp per model.</b> Every model scores 75–100 % on math-heavy categories (impossibility, Bayesian updating, hand-size bounds) and collapses on behavioural ones (strategic patience, probability estimation, risk calibration).</li>
-              <li><b>Causal proof.</b> In multi-turn games, programmatically disabling the CHALLENGE action raises win rates by +10 to +89 percentage points across every model. The deficit is behavioural, not mathematical.</li>
-              <li><b>Calibration doesn't save you.</b> Detection-gating gap of 33–66 pp: models see bluffs (recall 70–99 %) but cannot gate on them (precision 34–47 %).</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What is the "challenge bias"? Isn't it just overconfidence?</summary>
-          <div class="ans">
-            <p>No. <b>Overconfidence</b> is about <em>reporting</em> high probability of being correct. <b>Challenge bias</b> is about <em>choosing a specific action</em> regardless of the expected-value math.</p>
-            <p>We can separate them empirically. The <em>detection-gating gap</em> = recall(bluff) − precision(CHALL). For Mistral Nemo: recall is 99.4 % (sees almost every bluff) but precision is 33.9 % (only a third of its CHALL calls were actually bluffs). That 65.5 pp gap <em>is</em> the bias. Models <em>see</em> bluffs — they just cannot stop calling them.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Random beats LLMs at this game — really?</summary>
-          <div class="ans">
-            <p>Yes. Out of 50 multi-turn games:</p>
-            <ul>
-              <li>A uniform-random policy (weighted 40 % PASS / 30 % PLAY / 30 % CHALL) wins <b>41 / 50 = 82 %</b>.</li>
-              <li>The best LLM (DeepSeek V3, 671 B parameters) wins <b>25 / 50 = 50 %</b>.</li>
-              <li>Llama 3.1 8B and GPT-4o-mini win <b>0 / 50 = 0 %</b> (they lost every game).</li>
-            </ul>
-            <p>It's not because random is strong — it's because LLMs challenge on 31–77 % of turns with only 2.7–5.6 % challenge accuracy. Every wrong call transfers the pile. Random avoids both over-committing and over-challenging.</p>
-            <p>For context, in a 3-player game with 1 loser per game, a symmetric player wins 2/3 ≈ 67 % by chance. Every LLM is below chance.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What does the no-challenge ablation show?</summary>
-          <div class="ans">
-            <p>We re-ran 20 games per model with the CHALLENGE action <em>programmatically disabled</em>. Win rates jumped:</p>
-            <ul>
-              <li>Mistral Nemo: 6 % → 95 % (<b>+89 pp</b>)</li>
-              <li>Claude Haiku 4.5: 32 % → 90 % (<b>+58 pp</b>)</li>
-              <li>DeepSeek V3: 50 % → 100 % (<b>+50 pp</b>)</li>
-              <li>Gemma 3 12B: 24 % → 65 % (<b>+41 pp</b>)</li>
-              <li>… every model improved by +10 to +89 pp.</li>
-            </ul>
-            <p>This is a <b>causal</b> demonstration. The challenge bias is not a correlate or a confound — the action itself is what costs the models games. Take it away and the cost vanishes.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What is the math–behaviour gap?</summary>
-          <div class="ans">
-            <p>Every model splits cleanly across our 19 categories into a "math block" and a "behaviour block":</p>
-            <ul>
-              <li><b>Math block (75–100 %):</b> Impossible Detection, Hand-size Impossibility, Bayesian Updating, Opportunity Cost. The models can absolutely do the calculations.</li>
-              <li><b>Behavioural block (10–30 % for most, up to 65 % for Qwen3 235B):</b> Strategic Patience, Probability Estimation, Risk Calibration, Pattern Detection. The models collapse here.</li>
-            </ul>
-            <p>The per-model gap is 20–32 pp. The mathematics is intact; the willingness to <em>fold</em> when the math says fold is not. This is the core action-calibration deficit.</p>
-          </div>
-        </details>
-
-      </div>
+    <h3 style="margin-top:22px;font-family:'Bricolage Grotesque',Inter,sans-serif;font-weight:700;color:var(--ink);font-size:18px">State &amp; memory — tracking the table</h3>
+    <div class="findings">
+      <div class="finding"><div class="ord">Category</div><h3>Memory tracking</h3><p>Several turns of revealed cards have to be remembered to compute the right bluff probability. The AI's working memory is the variable being tested.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Cross-claim analysis</h3><p>Multiple opponents' claims, combined, exceed what's physically possible — even though each individual claim looks plausible. The AI must add them up.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Consistency tracking</h3><p>An opponent's cumulative claims over several turns contradict each other or break the deck's invariants. The AI catches the contradiction across history.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Recovery pressure</h3><p>An opponent just had to pick up the entire pile and is now likely on tilt. The AI must read the post-loss state and adjust expectations.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Multi-player coalition</h3><p>The third player's hand size or recent behaviour materially changes the right call. The AI must reason about more than the immediate opponent.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Deception quality</h3><p>The size of a claim relative to the claimer's hand is itself suspicious — claiming four of a kind when you've only got three cards left is a tell.</p></div>
     </div>
 
-    <!-- ===== Group 3: How it works ===== -->
-    <div class="faq-group">
-      <div class="grp-title">How the bot &amp; benchmark work</div>
-      <div class="faq-list">
-
-        <details class="faq-item">
-          <summary>How does the GoldenPolicyBot decide?</summary>
-          <div class="ans">
-            <p>It's a one-line policy: <b>argmax over the three expected values</b>. For each candidate action, it computes:</p>
-            <ul>
-              <li><b>EV(CHALL)</b> = (2 · P(bluff) − 1) · pile_size</li>
-              <li><b>EV(PLAY)</b> = min(4, matching cards in hand)</li>
-              <li><b>EV(PASS)</b> = 0</li>
-            </ul>
-            <p>where P(bluff) is computed from the hypergeometric posterior over the opponent's unseen cards. If the claim is arithmetically impossible (you've already seen too many of that rank), P(bluff) = 1 exactly. The bot picks whichever action maximises EV. That's it — no neural net, no learned weights.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>How is P(bluff) actually computed?</summary>
-          <div class="ans">
-            <p>Under the maximum-entropy assumption that the opponent's hand is a uniform random sample from the cards you haven't seen, the count of rank-R cards in their hand follows a hypergeometric distribution. The probability the claim is truthful is the probability they hold at least <em>k</em> copies of <em>R</em>:</p>
-            <p><code>P(truthful) = Σ_{i=k..min(K_R,n)} C(K_R,i) · C(N−K_R, n−i) / C(N,n)</code></p>
-            <p>where <code>K_R = 4 − m_R − s_R</code> is the count of rank-R cards still unseen to you, <code>m_R</code> is what's in your hand, <code>s_R</code> is what's been revealed in past challenges, <code>N</code> is the total unseen pool, and <code>n</code> is the opponent's hand size. <code>P(bluff) = 1 − P(truthful)</code>.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What does "win rate" mean in the multi-turn results?</summary>
-          <div class="ans">
-            <p>In Bluff, the <b>last player still holding cards loses</b>. With 3 players and exactly 1 loser per game, every game has 2 winners. So:</p>
-            <p>Win rate = fraction of 50 games in which the model in seat 0 did <em>not</em> end up as the final loser.</p>
-            <p>Chance for a symmetric player ≈ <b>2/3 = 67 %</b>. Every LLM in our cohort is below chance. Llama 3.1 8B and GPT-4o-mini lost <em>every single one</em> of their 50 games — the two GoldenPolicyBot opponents always managed to deplete their hands first.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Why is GoldenPolicyBot the right opponent?</summary>
-          <div class="ans">
-            <p>Because it <em>is</em> the reference policy. Playing LLMs against GoldenPolicyBot asks directly: "how does the model compare to what it should be doing?" Two related baselines anchor the scale:</p>
-            <ul>
-              <li><b>ev_oracle</b> (54 % win rate) — same EV argmax but with access to <em>all three hands</em>. The perfect-information ceiling.</li>
-              <li><b>GoldenPolicyBot</b> — the same EV argmax but with only <em>visible</em> information (your hand + revealed cards + pile). The realistic-information reference, used as the opponent here.</li>
-            </ul>
-            <p>The gap between LLM and GoldenPolicyBot is precisely the gap from optimal under shared-information conditions.</p>
-          </div>
-        </details>
-
-      </div>
+    <h3 style="margin-top:22px;font-family:'Bricolage Grotesque',Inter,sans-serif;font-weight:700;color:var(--ink);font-size:18px">Behavioural inference — opponent modelling under uncertainty</h3>
+    <div class="findings">
+      <div class="finding"><div class="ord">Category</div><h3>Probability estimation</h3><p>A mid-range bluff probability with no shortcuts — the AI has to actually run the hypergeometric math, not pattern-match a heuristic.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Risk calibration</h3><p>The pile size flips whether challenging is positive or negative expected value. The AI must weigh likelihood against stakes, not just look at probability alone.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Theory of mind</h3><p>An opponent's prior bluffing track record (e.g. "this player has bluffed 3 of 5 claims so far") is the only signal that resolves the call.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Pattern detection</h3><p>A sudden deviation from an opponent's established behaviour is the actual cue. The AI must compare the current claim to the opponent's history.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Strategic patience</h3><p>The math clearly says fold, but the situation feels heroic — claiming the pile would feel great. The AI is being tested on restraint.</p></div>
+      <div class="finding"><div class="ord">Category</div><h3>Bluff-catching asymmetry</h3><p>Different opponents have different bluff thresholds. The AI should treat a habitual bluffer's claim differently from a tight player's, even with identical card math.</p></div>
     </div>
 
-    <!-- ===== Group 4: Models & methodology ===== -->
-    <div class="faq-group">
-      <div class="grp-title">Models &amp; methodology</div>
-      <div class="faq-list">
+    <p class="lead" style="margin-top:18px">Every category shares the same underlying probability and expected-value calculation. What changes is which inputs the scenario stresses. The category accuracy in our results is just the percentage of scenarios in that family where the AI's choice matched the math-optimal answer.</p>
 
-        <details class="faq-item">
-          <summary>Which LLMs did you test?</summary>
-          <div class="ans">
-            <p>Nine models across five families, spanning 7 B to 671 B parameters. Single-turn cohort:</p>
-            <ul>
-              <li>Qwen3 235B A22B (open weights, MoE) — best overall</li>
-              <li>Claude Haiku 4.5 (Anthropic, proprietary) — second-best</li>
-              <li>DeepSeek V3 (671 B MoE, open weights)</li>
-              <li>Llama 3.1 8B Instruct (Meta, open weights)</li>
-              <li>GPT-4o-mini (OpenAI, proprietary)</li>
-              <li>Mistral 7B v0.1, Mistral Nemo 12B (Mistral, open weights)</li>
-              <li>Qwen 2.5 7B Instruct (Qwen, open weights)</li>
-              <li>Gemma 3 12B IT (Google, open weights)</li>
-            </ul>
-            <p>The multi-turn cohort is 7 of these — Qwen3 235B is excluded on cost, Mistral 7B on throughput. All access via OpenRouter at <code>temperature = 0</code> with a shared JSON-schema prompt.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Why those models specifically?</summary>
-          <div class="ans">
-            <p>Three goals drove the cohort selection:</p>
-            <ul>
-              <li><b>Span the parameter scale.</b> 7 B (Mistral, Qwen 2.5) → 671 B (DeepSeek V3). If size matters, this range will reveal it.</li>
-              <li><b>Span the model families.</b> Qwen, Meta, Mistral, Anthropic, DeepSeek, Google, OpenAI — five distinct training recipes.</li>
-              <li><b>Open-source-first methodology.</b> Per LudoBench's protocol, we front-load open-weight models for full reproducibility, and include two accessible proprietary models (Haiku 4.5, GPT-4o-mini). Frontier closed-source (GPT-4o, Sonnet 3.7, Gemini 2.5 Pro, Grok) is explicit Phase-2 scope.</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What about reasoning-augmented models — o1, DeepSeek R1, Sonnet 3.7-thinking?</summary>
-          <div class="ans">
-            <p>Deferred to Phase 2. Earlier versions of this work included DeepSeek R1 and surfaced a <em>reasoning–compliance tradeoff</em>: higher <em>parsed</em> accuracy but worse <em>deployment</em> accuracy because extended chain-of-thought exceeds token budgets and JSON parses fail. The fix is at the output layer, not in reasoning depth.</p>
-            <p>We expect reasoning models to do better on the math categories (where they already excel) and to show a milder version of the same challenge bias on the behavioural ones. That's a Phase-2 question worth answering in its own right.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Did scale actually help?</summary>
-          <div class="ans">
-            <p>Somewhat, not uniformly. Single-turn accuracy ranges 33.8 % (Mistral Nemo, 12 B) → 63.2 % (Qwen3 235B). PASS accuracy ranges 0.6 % (Gemma 3 12B) → 27.7 % (Qwen3 235B). So scale buys you a 46× improvement on the cleanest behavioural diagnostic.</p>
-            <p>But Qwen3 235B's PASS accuracy is <em>still below chance</em> (33 %). Scale helps; it does not solve. The gap between "knows the math" and "executes the math" is roughly constant across scales. <b>Training objective matters more than parameter count</b> — Qwen3 235B beats DeepSeek V3 (671 B) by 28 percentage points.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What about prompt engineering — surely better prompts would fix this?</summary>
-          <div class="ans">
-            <p>We tested three prompt framings: (a) the headline JSON schema, (b) a neutral text framing with no schema, (c) a chain-of-thought-first framing. Per-model ranking was identical across all three. Absolute accuracy shifted by ±2 pp.</p>
-            <p>We also tested explicit "be conservative" and "prefer PASS" instructions. They produced 2–5 pp shifts but did not close the 65 pp gap. Prompt engineering is a ceiling-limited intervention for this failure mode — the bias is in the action distribution itself, not in how we ask for it.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Can fine-tuning fix the challenge bias?</summary>
-          <div class="ans">
-            <p>Very likely, yes. The bias is behavioural, and a preference-tuning pass that penalises wrong CHALLs would probably close most of the gap. We didn't run that experiment because the goal of the benchmark is to <em>measure</em>, not to fix.</p>
-            <p>Whether frontier models can be fine-tuned to pass BluffBench while preserving general capability is itself a Phase-2 question. The benchmark provides the closed-form reward signal needed to train against.</p>
-          </div>
-        </details>
-
-      </div>
-    </div>
-
-    <!-- ===== Group 5: Implications & generalisation ===== -->
-    <div class="faq-group">
-      <div class="grp-title">Implications &amp; generalisation</div>
-      <div class="faq-list">
-
-        <details class="faq-item">
-          <summary>Does this matter outside card games?</summary>
-          <div class="ans">
-            <p>Yes — anywhere an LLM agent has to decide whether to <em>act on suspicion</em>:</p>
-            <ul>
-              <li><b>Fraud-review triage</b> — should I escalate this transaction?</li>
-              <li><b>Content moderation</b> — should I take this post down?</li>
-              <li><b>Medical / diagnostic triage</b> — should I order this test?</li>
-              <li><b>Security alerting</b> — should I page the on-call engineer?</li>
-            </ul>
-            <p>Every one of these inherits a version of the calibration problem we measure: high verbalised confidence does not translate to correct action, and adding reasoning-time compute does not by itself fix it. BluffBench gives a clean, repeatable measurement of this gap in card units.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>How do you reconcile this with "LLMs can reason"?</summary>
-          <div class="ans">
-            <p>We don't dispute that LLMs can perform the reasoning in isolation. On math-heavy categories they score 75–100 %. The novel finding is that <em>reasoning-in-isolation does not reliably translate to action-in-context</em>. The benchmark separates the two and measures the gap precisely.</p>
-            <p>If anything, the result is a refinement of the "LLMs can reason" claim, not a refutation. They <em>can</em> reason — under the right elicitation conditions. They have not yet been trained to use that reasoning to <em>gate</em> actions in adversarial settings.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What would invalidate the finding?</summary>
-          <div class="ans">
-            <p>Three things, all of which we tested for:</p>
-            <ul>
-              <li><b>A model that scores ≥40 % on Strategic Patience while keeping ≥80 % on CHALL-optimal.</b> None does. Qwen3 235B is the closest at 27.7 % / 81 %.</li>
-              <li><b>An error in the golden answers.</b> An independent validator re-derives every golden from the stored game state. 0 mismatches across 16,297 scenarios.</li>
-              <li><b>Prompt sensitivity.</b> We tested three framings and the per-model ranking is stable.</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>Are you overfitting to the hypergeometric model?</summary>
-          <div class="ans">
-            <p>A reasonable concern. Our answer: the PASS-bias finding is not an overfitting artefact because it manifests in cases where the math is <em>unambiguous</em> — notably the Arithmetic Impossibility category, where P(bluff) = 1 <em>exactly</em>. The responder holds, or has already seen revealed, more copies of the claimed rank than the opponent could legally play.</p>
-            <p>LLMs still fail to challenge in many of those cases. There is no opponent model under which PASS would be correct when the claim is mathematically impossible.</p>
-          </div>
-        </details>
-
-      </div>
-    </div>
-
-    <!-- ===== Group 6: About the project ===== -->
-    <div class="faq-group">
-      <div class="grp-title">About the project</div>
-      <div class="faq-list">
-
-        <details class="faq-item">
-          <summary>Who built this?</summary>
-          <div class="ans">
-            <p><b>Aryan Singh Dabas</b>, BITS Pilani thesis project (F471), mentored by <b>Dr. Dhruv Kumar</b>. Target venue: EMNLP 2026 (ARR submission window mid-2026).</p>
-            <p>The benchmark, evaluation engine, multi-turn simulator, four baseline policies, calibration suite, no-challenge ablation, and this browser demo are all part of the same release.</p>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What's released alongside the paper?</summary>
-          <div class="ans">
-            <p>Everything needed to reproduce the results:</p>
-            <ul>
-              <li><b>Dataset on Hugging Face</b> — all 4 splits (16K full, 500 balanced, 100 smoke-test, 1K lead-phase).</li>
-              <li><b>Code &amp; multi-turn engine</b> on an anonymous repo for review.</li>
-              <li><b>Per-model decision logs</b> — all 4,500 single-turn responses with reasoning traces.</li>
-              <li><b>Per-game logs</b> from all 350 multi-turn games and 140 ablation games.</li>
-              <li><b>This browser demo</b>, running the same GoldenPolicyBot algorithm as the paper.</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>What's still to come (Phase 2)?</summary>
-          <div class="ans">
-            <p>Explicit out-of-scope items, deferred to post-review work:</p>
-            <ul>
-              <li>Reasoning-augmented models (o1, DeepSeek R1, Sonnet 3.7-thinking).</li>
-              <li>Closed-source frontier models (GPT-4o, Sonnet 3.7, Gemini 2.5 Pro, Grok).</li>
-              <li>LLM scoring on the 1,000-scenario lead-phase corpus.</li>
-              <li>Multilingual Indic extension (Hindi, Bengali, Tamil — Bluff is widely played in South Asia).</li>
-              <li>Persona-conditioned and paired-narrative ablations.</li>
-              <li>Human baseline study.</li>
-              <li>Targeted fine-tuning to test whether the bias is removable.</li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-item">
-          <summary>How much did all this cost to run?</summary>
-          <div class="ans">
-            <p>Under <b>$100</b> for the full headline evaluation: 4,500 single-turn decisions across 9 models + 350 multi-turn games × 7 models + 140 ablation games. All via OpenRouter at <code>temperature = 0</code>; most of the cost came from DeepSeek V3 and Claude Haiku inference.</p>
-            <p>Fully reproducible with the released seed schedule and scenario hashes.</p>
-          </div>
-        </details>
-
-      </div>
-    </div>
-
+    <h2 style="margin-top:40px"><span class="num">04</span>Any other questions?</h2>
+    <p class="lead">The full draft research paper is available below — every method, every model, every result, with all the math and the appendix tables.</p>
+    <p style="margin-top:18px;text-align:center">
+      <a href="./bluffbench-paper.pdf" target="_blank" rel="noopener" style="display:inline-block;padding:14px 28px;background:var(--red);color:#fff;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;box-shadow:var(--glow-red)">Read the draft paper →</a>
+    </p>
+    <p class="lead" style="margin-top:14px;text-align:center;color:var(--ink-3);font-size:14px">Or reach out: <a href="mailto:f20220148@pilani.bits-pilani.ac.in" style="color:var(--ink-2);text-decoration:underline">f20220148@pilani.bits-pilani.ac.in</a></p>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
     <span><b>BluffBench</b> · A thesis project by <b>Aryan Singh Dabas</b>, mentored by <b>Dr. Dhruv Kumar</b> · BITS Pilani <span class="footer-ace" title="Psst — try typing ‘bluff’ anywhere on the page">♠</span></span>
-    <span class="mono">EMNLP 2026 · aryan1iitdelhi@gmail.com</span>
+    <span class="mono">EMNLP 2026 · f20220148@pilani.bits-pilani.ac.in</span>
   </div>
 </footer>
 
@@ -1649,88 +1094,32 @@ const SHORT = ['YOU','DOYLE','THE KID'];
 //          Lower challenge margin, higher bluff rate, quicker plays.
 const PROFILE = [
   null,
-  { // Doyle — tight grandmaster: patient, plays cards, rarely calls, rarely bluffs.
+  { // Doyle — tight grandmaster: patient, plays cards, calls on hard math evidence,
+    // rarely bluffs. Tightened for v2: lower noise, lower call threshold, smarter
+    // detection of overclaim opportunities.
     name:'Doyle',
-    margin:{imp:-10, over:1.2, hyp:3.5},           // virtually never challenges on stats
-    leaderTrust:0.4,
-    bluffWhenLeading:0.05,
-    bluffWhenForced:0.18,
-    playBonus:0.6,                                  // strongly prefers to play
-    challNoise:0.02,
-    confidenceFloorToChall:0.88                    // hard bar before a stats-only call
+    margin:{imp:-10, over:0.6, hyp:2.2},            // calls on weaker overclaim signals
+    leaderTrust:0.35,                               // trusts opener slightly less than before
+    bluffWhenLeading:0.04,
+    bluffWhenForced:0.14,                           // bluffs the smallest plausible amount when forced
+    playBonus:0.7,                                  // strongly prefers to play (offload cards)
+    challNoise:0.005,                               // near-deterministic
+    confidenceFloorToChall:0.82                     // calls a touch more readily
   },
-  { // The Cincinnati Kid — aggressive BLUFFER (not caller). Stages bold leads,
-    // pads responses, but only calls on real mathematical evidence.
+  { // The Cincinnati Kid — aggressive but disciplined. Bluffs strategically,
+    // catches over-extended human plays, snap-calls bad math.
+    // Tightened for v2: less noisy, smarter bluff detection.
     name:'The Kid',
-    margin:{imp:-10, over:0.55, hyp:2.5},
-    leaderTrust:0.65,
-    bluffWhenLeading:0.35,
-    bluffWhenForced:0.55,
-    playBonus:0.55,
-    challNoise:0.05,
-    confidenceFloorToChall:0.78
+    margin:{imp:-10, over:0.35, hyp:1.6},
+    leaderTrust:0.55,
+    bluffWhenLeading:0.30,
+    bluffWhenForced:0.42,                           // less reckless than before
+    playBonus:0.65,
+    challNoise:0.015,
+    confidenceFloorToChall:0.70                     // catches bluffs more readily
   }
 ];
 const TOTAL = 52;
-
-// ---------- Win-rate calibration ----------
-// The demo should land near the 50% figure the poster advertises. We keep a
-// short rolling window of outcomes in localStorage and, when the window tilts
-// too far either way, pre-decide the next game. Everything else flows from a
-// per-game flag; the bots then adjust their risk appetite so the result feels
-// earned rather than scripted.
-const RIG = {
-  window:4,
-  target:2,                 // wins per window
-  historyKey:'bb_rig_hist_v1',
-  userShouldWin:false
-};
-function rigReadHistory(){
-  try { return JSON.parse(localStorage.getItem(RIG.historyKey) || '[]'); }
-  catch(e){ return []; }
-}
-function rigWriteHistory(h){
-  try { localStorage.setItem(RIG.historyKey, JSON.stringify(h.slice(-RIG.window))); }
-  catch(e){}
-}
-function rigDecideOutcome(){
-  const h = rigReadHistory();
-  const recent = h.slice(-(RIG.window - 1));
-  const wins = recent.filter(x => x === 'W').length;
-  const losses = recent.length - wins;
-  if(wins >= RIG.target) RIG.userShouldWin = false;
-  else if(losses >= (RIG.window - RIG.target)) RIG.userShouldWin = true;
-  else RIG.userShouldWin = Math.random() < 0.5;
-}
-function rigRecordOutcome(userWon){
-  const h = rigReadHistory();
-  h.push(userWon ? 'W' : 'L');
-  rigWriteHistory(h);
-}
-// Called from botDecide when the previous play was the human's. Bots get to
-// look at the actual cards (they are already in G.pile) and choose whether to
-// call. Truthful claims are always let through — the bots would lose those.
-// Lies are called probabilistically; the late-game probability is the "punch"
-// that closes out games the user isn't scheduled to win.
-function rigDecideUserChallenge(pIdx){
-  const last = G.lastPlay;
-  if(!last || last.player !== 0) return null;
-  const lied = last.actualCards.some(c => c.rank !== last.claimedRank);
-  if(!lied) return {catch:false, truth:true};
-  const userHand = G.hands[0].length;
-  let p;
-  if(RIG.userShouldWin){
-    if(userHand <= 3)      p = 0.28;
-    else if(userHand <= 6) p = 0.14;
-    else                   p = 0.07;
-  } else {
-    if(userHand <= 3)      p = 0.88;
-    else if(userHand <= 6) p = 0.45;
-    else                   p = 0.16;
-  }
-  if(pIdx === 1) p *= 0.85;   // Doyle slightly less trigger-happy than The Kid
-  return {catch:Math.random() < p, truth:false};
-}
 
 // ---------- RNG ----------
 function seedRng(seed){
@@ -2024,7 +1413,6 @@ function updateRankGrid(){
 
 // ---------- Game start / flow ----------
 function newGame(){
-  rigDecideOutcome();
   G.seed = Math.floor(rng()*99999);
   const a = seedRng(G.seed + 2026);
   rng = a;
@@ -2099,27 +1487,6 @@ function botDecide(pIdx){
   if(last.player === pIdx) return {act:'PASS'};
 
   const P = PROFILE[pIdx] || PROFILE[1];
-
-  // If the previous play was the human's, let the rig decide. Truthful claims
-  // are never challenged (the bot would lose); lies are challenged with a
-  // probability tuned by the current game's target outcome.
-  let rigForceChall = null;
-  if(last.player === 0){
-    const r = rigDecideUserChallenge(pIdx);
-    if(r){
-      if(r.truth) rigForceChall = false;
-      else rigForceChall = r.catch;
-    }
-  }
-  if(rigForceChall === true){
-    return {act:'CHALL', ev:{
-      reason:'hypergeometric', pBluff:0.97,
-      K_rem:0, priorClaimedBeforeLast:0,
-      totalClaimedThisRound:G.pile.length,
-      isOpenerClaim:false, bot:P.name
-    }};
-  }
-
   const R = last.claimedRank;
   const myR = countRank(G.hands[pIdx], R);
   const revR = G.revealedByRank[R] || 0;
@@ -2193,13 +1560,12 @@ function botDecide(pIdx){
     const pCalled = (pIdx === 1) ? 0.4 : 0.25;
     const bluffSize = Math.max(1, Math.min(2, 1 + (rng()<P.bluffWhenForced ? 1 : 0)));
     ev_play = (1 - pCalled) * bluffSize - pCalled * (pile * 0.8) + P.playBonus * 0.6;
-    if(!RIG.userShouldWin) ev_play -= 6;   // prefer PASS so user has nothing to catch
   }
   // Slight bias toward PASS when hand is already small — preserve the lead.
   const ev_pass = (G.hands[pIdx].length <= 4) ? 0.15 : 0;
 
   const noise = () => (rng() - 0.5) * P.challNoise;
-  const finalChall = (rigForceChall === false) ? -Infinity : (ev_chall + noise() - challMargin);
+  const finalChall = ev_chall + noise() - challMargin;
   const finalPlay  = ev_play  + noise();
   const finalPass  = ev_pass  + noise()*0.4;
 
@@ -2229,8 +1595,7 @@ function botLead(pIdx){
   const best = counts[0];
 
   // Personality: The Kid stages bold bluff-leads; Doyle almost never does.
-  const leadBluffRate = P.bluffWhenLeading * (RIG.userShouldWin ? 1 : 0.25);
-  if(rng() < leadBluffRate && best.n >= 1 && best.n < 4){
+  if(rng() < P.bluffWhenLeading && best.n >= 1 && best.n < 4){
     const pad = 1 + (rng() < 0.3 ? 1 : 0);          // claim +1 or +2
     const claim = Math.min(4, best.n + pad);
     return {act:'LEAD', rank:best.r, count:claim};  // LEAD handler pads from non-matches
@@ -2283,9 +1648,9 @@ function botTurn(pIdx){
     if(d.ev){
       const r = d.ev.reason;
       const tag = r === 'impossible-claim'   ? 'impossible — more of that rank than can exist'
-                 : r === 'overclaim-personal' ? `overclaim vs you specifically (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem} possible)`
-                 : r === 'overclaim-general'  ? `round overclaim (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem})`
-                 : `P(bluff)≈${(d.ev.pBluff*100)|0}%`;
+                 : r === 'overclaim-personal' ? `over-claim vs you specifically (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem} possible)`
+                 : r === 'overclaim-general'  ? `over-claim across the round (${d.ev.totalClaimedThisRound} > ${d.ev.K_rem})`
+                 : `bluff likelihood ≈ ${(d.ev.pBluff*100)|0}%`;
       logEvent(PLAYERS[pIdx], 'reads the table', tag, 'ch');
     }
     doChallenge(pIdx);
@@ -2312,8 +1677,7 @@ function botTurn(pIdx){
     } else {
       n = Math.min(4, matchIdx.length);
       // Personality: The Kid pads claims with extra bluff cards
-      const padRate = P.bluffWhenLeading * 0.8 * (RIG.userShouldWin ? 1 : 0.2);
-      if(rng() < padRate && n < 4 && hand.length > matchIdx.length){
+      if(rng() < (P.bluffWhenLeading*0.8) && n < 4 && hand.length > matchIdx.length){
         const extra = [];
         for(let i=0;i<hand.length;i++) if(!matchIdx.includes(i)){ extra.push(i); break; }
         picks = matchIdx.slice(0,n).concat(extra);
@@ -2509,7 +1873,6 @@ function checkSafeAndEnd(){
     G.phase = 'GAME_OVER';
     const loserIdx = G.safe.findIndex(s=>!s);
     const youWon = loserIdx !== 0;
-    rigRecordOutcome(youWon);
     const m = $('modal');
     $('modalH').textContent = youWon ? '🎉 Yay — you win!' : 'You\'re the last one holding cards.';
     $('modalH').className = youWon ? 'win' : 'lose';
@@ -2688,102 +2051,6 @@ document.addEventListener('click', (e) => {
 // Render initial (empty) state under the start overlay.
 G.phase = 'IDLE';
 render();
-
-// ====================================================================
-//  HEATMAP RENDERER
-//  Per-category accuracy on BluffBench-500. Numbers verified from
-//  outputs/evaluation/v3_final/ + v3_final_multi/.
-// ====================================================================
-(function buildHeatmap(){
-  const grid = document.getElementById('heatgrid');
-  if(!grid) return;
-
-  const models = [
-    {short:'Qwen3',    long:'Qwen3 235B',   pp:'235B'},
-    {short:'Haiku',    long:'Haiku 4.5',    pp:'—'},
-    {short:'Llama',    long:'Llama 3.1',    pp:'8B'},
-    {short:'GPT-4om',  long:'GPT-4o-mini',  pp:'—'},
-    {short:'DSeek',    long:'DeepSeek V3',  pp:'671B'},
-    {short:'Mist7B',   long:'Mistral 7B',   pp:'7B'},
-    {short:'Qwen2.5',  long:'Qwen 2.5',     pp:'7B'},
-    {short:'Gemma',    long:'Gemma 3',      pp:'12B'},
-    {short:'Nemo',     long:'Mistral Nemo', pp:'12B'},
-  ];
-
-  const blocks = [
-    { name: 'Mathematical block', cats: [
-      { label:'Hand-size impossibility',   vals:[75.0,100.0, 75.0,100.0,100.0,100.0,100.0,100.0,100.0] },
-      { label:'Opportunity cost',          vals:[77.8, 88.9, 77.8,100.0,100.0, 77.8,100.0,100.0,100.0] },
-      { label:'Impossible detection',      vals:[94.4, 91.7, 63.9, 91.7, 91.7, 91.7, 86.1, 88.9, 94.4] },
-      { label:'Bayesian updating',         vals:[76.9, 69.2, 61.5,100.0,100.0,100.0, 92.3, 92.3,100.0] },
-      { label:'Information asymmetry',     vals:[66.7, 44.4, 77.8, 55.6, 77.8, 66.7, 77.8, 77.8, 77.8] },
-      { label:'Cognitive-bias resistance', vals:[86.4, 72.7, 54.5, 54.5, 68.2, 63.6, 59.1, 54.5, 63.6] },
-      { label:'Deception quality',         vals:[66.7, 66.7, 55.6, 55.6, 55.6, 55.6, 55.6, 55.6, 55.6] },
-    ]},
-    { name: 'Behavioural block', cats: [
-      { label:'Risk calibration',          vals:[45.5, 35.4, 29.3, 26.3, 18.2, 17.2, 17.2, 15.2, 14.1] },
-      { label:'Probability estimation',    vals:[73.4, 40.5, 30.4, 15.2, 11.4, 13.9, 15.2, 13.9, 10.1] },
-      { label:'Memory tracking',           vals:[71.4, 53.6, 35.7, 53.6, 53.6, 53.6, 50.0, 53.6, 53.6] },
-      { label:'Theory of mind',            vals:[51.2, 34.2, 26.8, 24.4, 26.8, 24.4, 31.7, 24.4, 24.4] },
-      { label:'Pattern detection',         vals:[46.0, 27.0, 18.9, 10.8, 10.8, 13.5, 24.3, 16.2, 13.5] },
-      { label:'Bluff-catching asymmetry',  vals:[78.6, 64.3, 21.4, 14.3, 35.7, 14.3, 14.3, 42.9, 14.3] },
-      { label:'Multi-player',              vals:[63.3, 53.3, 40.0, 40.0, 23.3, 43.3, 26.7, 26.7, 23.3] },
-      { label:'Recovery pressure',         vals:[60.9, 47.8, 47.8, 47.8, 52.2, 56.5, 56.5, 52.2, 52.2] },
-      { label:'Consistency tracking',      vals:[46.7, 46.7, 40.0, 40.0, 26.7, 26.7, 26.7, 26.7, 26.7] },
-      { label:'Cross-claim analysis',      vals:[52.9, 70.6, 47.1, 29.4, 29.4, 29.4, 17.6, 29.4, 29.4] },
-      { label:'Strategic patience',        vals:[66.7, 13.3, 46.7, 40.0, 13.3,  6.7,  6.7, 13.3,  6.7] },
-    ]}
-  ];
-
-  // Color scale: red (low) → amber (mid) → green (high)
-  // Built to read clearly on dark background; alpha rises with value.
-  function colorFor(v){
-    const t = Math.max(0, Math.min(1, v / 100));
-    const hue   = 0 + 130 * t;          // 0=red → 130=green
-    const sat   = 60 + 5 * t;            // 60% → 65%
-    const light = 26 + 22 * t;           // 26% → 48%
-    const alpha = 0.40 + 0.50 * t;       // 0.40 → 0.90
-    return `hsla(${hue.toFixed(0)},${sat.toFixed(0)}%,${light.toFixed(0)}%,${alpha.toFixed(2)})`;
-  }
-
-  // Build header row
-  const corner = document.createElement('div');
-  corner.className = 'h-corner';
-  corner.textContent = 'Category ↓ / Model →';
-  grid.appendChild(corner);
-
-  for(const m of models){
-    const h = document.createElement('div');
-    h.className = 'h-model';
-    h.innerHTML = `${m.long}<span class="pp">${m.pp}</span>`;
-    grid.appendChild(h);
-  }
-
-  // Build block rows
-  for(const blk of blocks){
-    const sep = document.createElement('div');
-    sep.className = 'h-block';
-    sep.textContent = blk.name;
-    grid.appendChild(sep);
-
-    for(const cat of blk.cats){
-      const lbl = document.createElement('div');
-      lbl.className = 'h-cat';
-      lbl.textContent = cat.label;
-      grid.appendChild(lbl);
-
-      for(let i = 0; i < models.length; i++){
-        const v = cat.vals[i];
-        const cell = document.createElement('div');
-        cell.className = 'cell' + (v < 33 ? ' lo' : '');
-        cell.style.background = colorFor(v);
-        cell.textContent = v.toFixed(1);
-        cell.title = `${models[i].long} · ${cat.label}: ${v.toFixed(1)}%`;
-        grid.appendChild(cell);
-      }
-    }
-  }
-})();
 </script>
 
 </body>
